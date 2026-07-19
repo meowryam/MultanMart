@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Basket — Neighborhood Grocery</title>
+<meta name="description" content="Fresh groceries for your table. Order online, pick up or get it delivered — no app, no hassle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header" id="top">
+  <div class="header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <path d="M9 16 L12 34 L28 34 L31 16 Z" fill="var(--basket)"/>
+          <path d="M14 16 C14 8, 26 8, 26 16" stroke="var(--basket-line)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <line x1="9" y1="16" x2="31" y2="16" stroke="var(--basket-line)" stroke-width="2"/>
+        </svg>
+      </span>
+      <span class="brand-name">Green Basket</span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="#catalog">Catalog</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Fresh from the neighborhood, straight to your door</p>
+    <h1 class="hero-title">Order groceries the way you'd ask a friend&nbsp;—<br class="hero-break"> simply, and right here.</h1>
+    <p class="hero-sub">Browse what's in stock, tap “Order Now,” and we'll take it from there. No apps to download, no accounts to make.</p>
+    <div class="hero-actions">
+      <a href="#catalog" class="btn btn-primary">Browse the Catalog</a>
+      <a href="#how-it-works" class="btn btn-ghost">How Ordering Works</a>
+    </div>
+  </div>
+  <div class="hero-receipt" aria-hidden="true">
+    <div class="receipt-card">
+      <div class="receipt-row"><span>Vine Tomatoes</span><span>1 kg</span></div>
+      <div class="receipt-row"><span>Farmhouse Eggs</span><span>1 dozen</span></div>
+      <div class="receipt-row"><span>Whole Wheat Bread</span><span>2 loaves</span></div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-row receipt-total"><span>Order received</span><span>✓</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CATALOG ================= -->
+<section class="catalog-section" id="catalog">
+  <div class="section-inner">
+    <div class="section-heading">
+      <p class="eyebrow">The Catalog</p>
+      <h2>What's fresh today</h2>
+      <p class="section-lead">Tap any product to see details, or order straight from the card.</p>
+    </div>
+
+    <div class="catalog-filters" role="tablist" aria-label="Filter products by category">
+      <button class="filter-chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+      <button class="filter-chip" data-filter="produce" role="tab" aria-selected="false">Produce</button>
+      <button class="filter-chip" data-filter="dairy" role="tab" aria-selected="false">Dairy &amp; Eggs</button>
+      <button class="filter-chip" data-filter="bakery" role="tab" aria-selected="false">Bakery</button>
+      <button class="filter-chip" data-filter="pantry" role="tab" aria-selected="false">Pantry</button>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Product cards are rendered by script.js from the PRODUCTS array -->
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="how-section" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-heading">
+      <p class="eyebrow">How It Works</p>
+      <h2>Ordering takes about a minute</h2>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        <span class="step-mark">1</span>
+        <h3>Pick what you need</h3>
+        <p>Browse the catalog and tap “Order Now” on anything you'd like.</p>
+      </li>
+      <li class="step">
+        <span class="step-mark">2</span>
+        <h3>Tell us where to send it</h3>
+        <p>Fill in your name, phone number, and address in the order form.</p>
+      </li>
+      <li class="step">
+        <span class="step-mark">3</span>
+        <h3>We take it from here</h3>
+        <p>Your order comes straight to us. We'll call to confirm and arrange delivery or pickup.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact-section" id="contact">
+  <div class="section-inner contact-inner">
+    <div class="contact-copy">
+      <p class="eyebrow">Contact</p>
+      <h2>Have questions? Contact us directly.</h2>
+      <p class="section-lead">Ordering happens through the catalog above — but if you'd like to ask about stock, hours, or anything else, we're glad to hear from you.</p>
+
+      <dl class="contact-details">
+        <div class="contact-row">
+          <dt>Phone</dt>
+          <dd id="contactPhoneDisplay">+92 300 0000000</dd>
+        </div>
+        <div class="contact-row">
+          <dt>WhatsApp</dt>
+          <dd id="contactWhatsAppDisplay">+92 300 0000000</dd>
+        </div>
+        <div class="contact-row">
+          <dt>Address</dt>
+          <dd id="contactAddressDisplay">Shop 4, Market Road, Your Neighborhood, City</dd>
+        </div>
+        <div class="contact-row">
+          <dt>Hours</dt>
+          <dd id="contactHoursDisplay">Mon – Sat, 9:00 AM – 9:00 PM</dd>
+        </div>
+      </dl>
+
+      <div class="contact-actions">
+        <a href="#" id="callBusinessBtn" class="btn btn-primary">Call Us</a>
+        <a href="#" id="whatsappInquiryBtn" class="btn btn-ghost" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+      <p class="contact-note">These are for inquiries only — ordering happens through the website above.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="section-inner footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">Green Basket</span>
+      <p>Your neighborhood grocery, now online.</p>
+    </div>
+    <p class="footer-note">© <span id="footerYear"></span> Green Basket. Fresh picks, delivered with care.</p>
+  </div>
+</footer>
+
+<!-- ================= FLOATING ACTION BUTTON ================= -->
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-menu" id="fabMenu" role="menu" aria-hidden="true">
+    <a href="#" id="fabWhatsApp" class="fab-menu-item" role="menuitem" target="_blank" rel="noopener">
+      <span class="fab-menu-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 12 4a8.96 8.96 0 0 0-7.7 13.5L3 21l3.6-1.3A8.96 8.96 0 0 0 12 21a8.96 8.96 0 0 0 5.6-15.7ZM12 19.3a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8 1 1-2.7-.2-.3A7.4 7.4 0 1 1 19.4 12a7.4 7.4 0 0 1-7.4 7.3Zm4-5.6c-.2-.1-1.3-.6-1.5-.7-.2-.1-.3-.1-.5.1s-.6.7-.7.8-.3.2-.5.1a6 6 0 0 1-1.8-1.1 6.6 6.6 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.3-.4.2-.3a.5.5 0 0 0 0-.4c0-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2 4.7 4.7 0 0 0 1 2.5 10.8 10.8 0 0 0 4.1 3.6c.6.2 1 .4 1.4.5a3.3 3.3 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c-.1-.1-.2-.2-.4-.3Z"/></svg>
+      </span>
+      <span>WhatsApp Inquiry</span>
+    </a>
+    <a href="#" id="fabCall" class="fab-menu-item" role="menuitem">
+      <span class="fab-menu-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6.6 10.8c1.4 2.7 3.6 4.9 6.3 6.3l2.1-2.1a1 1 0 0 1 1-.2 11 11 0 0 0 3.5.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.6a1 1 0 0 1 1 1 11 11 0 0 0 .6 3.5 1 1 0 0 1-.3 1Z"/></svg>
+      </span>
+      <span>Call Business</span>
+    </a>
+  </div>
+  <button class="fab-main" id="fabMain" aria-label="Contact options" aria-expanded="false" aria-controls="fabMenu">
+    <span class="fab-icon fab-icon-plus" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </span>
+  </button>
+</div>
+
+<!-- ================= PRODUCT DETAIL MODAL ================= -->
+<div class="modal-overlay" id="productModalOverlay">
+  <div class="modal product-modal" role="dialog" aria-modal="true" aria-labelledby="productModalName">
+    <button class="modal-close" id="productModalClose" aria-label="Close product details">✕</button>
+    <div class="product-modal-media">
+      <div class="product-image-placeholder" id="productModalImage" aria-hidden="true"></div>
+    </div>
+    <div class="product-modal-body">
+      <div class="product-modal-topline">
+        <span class="stock-pill" id="productModalStock">In Stock</span>
+        <span class="category-pill" id="productModalCategory">Produce</span>
+      </div>
+      <h3 id="productModalName">Product Name</h3>
+      <p class="product-modal-price" id="productModalPrice">Rs. 0</p>
+      <p class="product-modal-desc" id="productModalDesc">Description placeholder text about this product goes here.</p>
+
+      <div class="quantity-row">
+        <span class="quantity-label">Quantity</span>
+        <div class="quantity-stepper" id="productModalStepper">
+          <button type="button" class="stepper-btn" id="productModalMinus" aria-label="Decrease quantity">−</button>
+          <input type="number" id="productModalQty" class="stepper-input" value="1" min="1" inputmode="numeric" aria-label="Quantity">
+          <button type="button" class="stepper-btn" id="productModalPlus" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="productModalOrderBtn">Order Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ORDER MODAL ================= -->
+<div class="modal-overlay" id="orderModalOverlay">
+  <div class="modal order-modal" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+    <button class="modal-close" id="orderModalClose" aria-label="Close order form">✕</button>
+
+    <!-- ---- Form State ---- -->
+    <div class="order-modal-state" id="orderFormState">
+      <h3 id="orderModalTitle">Place Your Order</h3>
+      <p class="order-modal-sub">We'll confirm by phone before anything is delivered.</p>
+
+      <form id="orderForm" novalidate>
+        <div class="field">
+          <label for="orderProductName">Product</label>
+          <input type="text" id="orderProductName" name="productName" readonly>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="orderQuantity">Quantity</label>
+            <input type="number" id="orderQuantity" name="quantity" min="1" value="1" inputmode="numeric">
+            <span class="field-error" id="error-quantity">Enter a quantity of at least 1.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="orderCustomerName">Your Name</label>
+          <input type="text" id="orderCustomerName" name="customerName" placeholder="e.g. Ayesha Khan" autocomplete="name">
+          <span class="field-error" id="error-customerName">Please enter your name.</span>
+        </div>
+
+        <div class="field">
+          <label for="orderPhoneNumber">Phone Number</label>
+          <input type="tel" id="orderPhoneNumber" name="phoneNumber" placeholder="e.g. 0300 1234567" autocomplete="tel">
+          <span class="field-error" id="error-phoneNumber">Please enter a phone number.</span>
+        </div>
+
+        <div class="field">
+          <label for="orderAddress">Delivery Address</label>
+          <textarea id="orderAddress" name="address" rows="2" placeholder="House / street / area" autocomplete="street-address"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="orderNotes">Additional Notes <span class="field-optional">(optional)</span></label>
+          <textarea id="orderNotes" name="notes" rows="2" placeholder="Any preferences, substitutions, or delivery instructions"></textarea>
+        </div>
+
+        <p class="form-error-summary" id="formErrorSummary" role="alert"></p>
+
+        <div class="order-modal-actions">
+          <button type="button" class="btn btn-text" id="orderCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="orderSubmitBtn">
+            <span class="btn-label">Submit Order</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ---- Success State ---- -->
+    <div class="order-modal-state order-success-state" id="orderSuccessState" hidden>
+      <div class="success-stamp" aria-hidden="true">
+        <svg viewBox="0 0 120 120" width="88" height="88">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="var(--basket)" stroke-width="3" stroke-dasharray="6 5"/>
+          <path d="M38 62 L52 76 L84 42" fill="none" stroke="var(--basket)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" class="stamp-check"/>
+        </svg>
+      </div>
+      <h3>Order Submitted Successfully</h3>
+      <p>Thank you. We have received your order and will contact you shortly.</p>
+      <div class="order-modal-actions order-modal-actions-center">
+        <button type="button" class="btn btn-ghost" id="continueBrowsingBtn">Continue Browsing</button>
+        <button type="button" class="btn btn-primary" id="successCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

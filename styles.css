@@ -3,16 +3,16 @@
    Design tokens
    Color:
      --paper       #FFF8F2  warm off-white background
-     --paper-alt   #FFF3CD  yellow-tinted band for section contrast (yellow tint)
-     --ink         #1E1E1E  primary text
-     --ink-soft    #555555  secondary text
-     --basket      #E53935  primary red (brand primary — buttons, links, active states)
-     --basket-deep #C62828  red hover/pressed state
-     --marigold    #FFC107  primary yellow (brand accent)
-     --marigold-deep #E6A800 yellow hover/pressed state
-     --line        #FFE5E4  red-tinted hairline borders
+     --paper-alt   #FFF9E0  yellow-tinted band for section contrast
+     --ink         #111111  primary text
+     --ink-soft    #444444  secondary text
+     --basket      #FF0000  primary red (brand primary — buttons, links, active states)
+     --basket-deep #E60000  red hover/pressed state
+     --marigold    #FFD500  primary yellow (brand accent)
+     --marigold-deep #E6BE00 yellow hover/pressed state
+     --line        #FFD6D6  red-tinted hairline borders
      --card        #FFFFFF  card surface
-     --danger      #C62828  error red (reuses red-hover for clear but on-brand alerts)
+     --danger      #E60000  error red
    Type:
      Display: 'Manrope' (modern, confident, retail-appropriate)
      Body/UI: 'Inter' (clean, legible, humanist)
@@ -30,15 +30,14 @@
   --basket-line: #FF0000;
   --basket-deep: #E60000;
   --basket-tint: #FFE0E0;
-  --marigold: #FFD700;
-  --marigold-deep: #E6C200;
-  --marigold-tint: #FFF6CC;
+  --marigold: #FFD500;
+  --marigold-deep: #E6BE00;
+  --marigold-tint: #FFF3B0;
   --line: #FFD6D6;
   --line-strong: #FFB3B3;
   --card: #FFFFFF;
   --danger: #E60000;
   --danger-tint: #FFE0E0;
-  /* rest unchanged */
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -280,11 +279,13 @@ button {
 .hero {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 76px 28px 96px;
+  padding: 56px 28px 72px;
   display: grid;
   grid-template-columns: 1.1fr 0.8fr;
   gap: 48px;
   align-items: center;
+  background: var(--marigold-tint);
+  border-radius: var(--radius-lg);
 }
 
 .hero-eyebrow {
@@ -393,6 +394,9 @@ button {
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 32px;
+  background: var(--marigold-tint);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
 }
 
 .filter-chip {
@@ -563,7 +567,7 @@ button {
 
 .how-section {
   padding: 80px 0;
-  background: var(--paper-alt);
+  background: var(--marigold-tint);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -591,8 +595,8 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--marigold-tint);
-  color: var(--marigold-deep);
+  background: var(--basket);
+  color: var(--marigold);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.05rem;
@@ -1114,8 +1118,9 @@ textarea { resize: vertical; min-height: 56px; }
 @media (max-width: 860px) {
   .hero {
     grid-template-columns: 1fr;
-    padding-top: 48px;
-    padding-bottom: 56px;
+    padding-top: 40px;
+    padding-bottom: 48px;
+    border-radius: 0;
     text-align: center;
   }
 
@@ -1133,7 +1138,11 @@ textarea { resize: vertical; min-height: 56px; }
     word-break: break-word;
   }
 
-  .hero-receipt { order: -1; margin-bottom: 8px; }
+  /* Illustration now follows the text content — no reordering above headings */
+  .hero-receipt {
+    margin-top: 32px;
+    margin-bottom: 0;
+  }
   .receipt-card { width: 220px; }
 
   .steps { grid-template-columns: 1fr; }
@@ -1159,6 +1168,7 @@ textarea { resize: vertical; min-height: 56px; }
     text-align: left;
   }
 }
+
 @media (max-width: 720px) {
   .main-nav {
     display: flex;
@@ -1213,26 +1223,26 @@ textarea { resize: vertical; min-height: 56px; }
   /* ---- Prevents iOS Safari auto-zoom when tapping form fields ---- */
   input, textarea { font-size: 16px; }
 }
-  .nav-toggle { display: flex; }
 
-  .main-nav.is-open {
-    max-height: 320px;
-    opacity: 1;
-    visibility: visible;
-    padding: 16px 28px 22px;
-    gap: 4px;
-    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.28s ease 0.04s,
-                padding 0.32s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s linear;
+/* ---- Catalog card spacing fix for narrow/mobile screens ---- */
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
-
-  .main-nav a { padding: 10px 0; }
-
-  .contact-row { flex-direction: column; gap: 4px; }
-  .contact-row dd { text-align: left; }
-
-  .field-row { flex-direction: column; }
+  .product-card-body {
+    padding: 20px 20px 22px;
+    gap: 12px;
+  }
+  .catalog-filters {
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 12px 14px;
+  }
+  .filter-chip {
+    padding: 8px 14px;
+    font-size: 0.84rem;
+  }
 }
 
 @media (max-width: 480px) {

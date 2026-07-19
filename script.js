@@ -92,13 +92,40 @@ const PRODUCTS = [
     `;
   }
 
+  const CATEGORY_ORDER = ["produce", "dairy", "bakery", "pantry"];
+
+  function categoryGroupHTML(category, products) {
+    return `
+      <div class="category-group" data-category-group="${category}">
+        <h3 class="category-group-title">${CATEGORY_LABELS[category]}</h3>
+        <div class="category-row">
+          ${products.map(productCardHTML).join("")}
+        </div>
+      </div>
+    `;
+  }
+
   function renderCatalog() {
     const filtered = activeFilter === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeFilter);
     if (filtered.length === 0) {
       productGrid.innerHTML = `<p class="empty-state">No products in this category right now — check back soon.</p>`;
       return;
     }
-    productGrid.innerHTML = filtered.map(productCardHTML).join("");
+
+    // Group products by category (in a fixed display order) so the catalog
+    // can render as category rows — CSS decides whether each row scrolls
+    // horizontally (mobile) or the whole thing lays out as one grid (desktop).
+    const categoriesToShow = activeFilter === "all"
+      ? CATEGORY_ORDER
+      : [activeFilter];
+
+    productGrid.innerHTML = categoriesToShow
+      .map((category) => {
+        const productsInCategory = filtered.filter((p) => p.category === category);
+        if (productsInCategory.length === 0) return "";
+        return categoryGroupHTML(category, productsInCategory);
+      })
+      .join("");
   }
 
   function setActiveFilter(filter) {

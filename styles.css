@@ -253,8 +253,11 @@ textarea{resize:vertical;min-height:64px}
     grid-template-columns:none;
     gap:12px;
     overflow-x:auto;
-    scroll-snap-type:x mandatory;
+    scroll-snap-type:x proximity;
+    scroll-behavior:smooth;
     -webkit-overflow-scrolling:touch;
+    touch-action:pan-x;
+    overscroll-behavior-x:contain;
     padding:4px 20px 10px;
     margin:0 -20px;
     scrollbar-width:none;
@@ -262,7 +265,8 @@ textarea{resize:vertical;min-height:64px}
   .category-row::-webkit-scrollbar{display:none}
   .category-row .product-card{
     flex:0 0 46%;
-    scroll-snap-align:start;
+    scroll-snap-align:center;
+    scroll-snap-stop:normal;
     animation:card-slide-in .5s ease both;
   }
   .category-row .product-card .product-image-placeholder{aspect-ratio:1/1}
@@ -292,14 +296,17 @@ textarea{resize:vertical;min-height:64px}
   .header-inner{padding:0 18px}
   .hero{padding-left:18px;padding-right:18px}
   .fab-wrap{right:16px;bottom:16px}
-  .modal{border-radius:var(--radius-md);max-height:92vh}
-  .order-modal-state{padding:20px 18px 18px}
-  .order-modal-sub{margin:4px 0 16px;font-size:.92rem}
-  #orderModalTitle{font-size:1.3rem}
-  .field{margin-bottom:12px}
-  label{margin-bottom:5px;font-size:.86rem}
-  input[type="text"],input[type="tel"],input[type="number"],textarea{padding:10px 12px;min-height:44px}
-  textarea{min-height:40px;max-height:60px}
-  .order-modal-actions{margin-top:14px}
+  .modal{border-radius:var(--radius-md);max-height:86vh}
+  .order-modal-state{padding:16px 16px 14px}
+  .order-modal-sub{margin:2px 0 12px;font-size:.86rem}
+  #orderModalTitle{font-size:1.15rem;padding-right:26px}
+  .field{margin-bottom:9px}
+  label{margin-bottom:3px;font-size:.8rem}
+  input[type="text"],input[type="tel"],input[type="number"],textarea{padding:8px 12px;min-height:38px;font-size:.95rem}
+  textarea{min-height:34px;max-height:46px}
+  #orderProductName{min-height:34px;padding:7px 12px;font-size:.9rem}
+  .order-modal-actions{margin-top:10px}
+  .order-modal-actions .btn{padding:11px 18px;min-height:44px;font-size:.92rem}
+  .modal-close{width:34px;height:34px;top:12px;right:12px}
   .product-modal-body{padding:22px 20px 24px}
 }

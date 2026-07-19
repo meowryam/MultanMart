@@ -16,16 +16,11 @@
    Update the values below with your real business details.
    ========================================================= */
 const OWNER_SETTINGS = {
-  // Phone number customers will call (any format you like for display).
-  phoneNumberDisplay: "+92 300 0000000",
-  // Same number, digits only, used to build the tel: link. Include country code.
-  phoneNumberDial: "+923000000000",
-
-  // WhatsApp number for inquiries. Digits only, with country code, no + or spaces.
-  whatsAppNumber: "923000000000",
-  whatsAppNumberDisplay: "+92 300 0000000",
-
-  businessAddress: "Shop 4, Market Road, Your Neighborhood, City",
+  phoneNumberDisplay: "0300 8770122",
+  phoneNumberDial: "+923008770122",
+  whatsAppNumber: "923008770122",
+  whatsAppNumberDisplay: "0300 8770122",
+  businessAddress: "Multan, Pakistan",
   businessHours: "Mon – Sat, 9:00 AM – 9:00 PM",
 };
 
@@ -44,16 +39,51 @@ const OWNER_SETTINGS = {
    entry ID from that same pre-filled link (look for
    "entry.XXXXXXXXX=" in the URL for each field).
    ========================================================= */
-const GOOGLE_FORM_ACTION_URL = "GOOGLE_FORM_URL_HERE";
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8Osj3Dm2Vqi-1ESWPm4cOwHViXwPl9a5qJ-027yZhtuAU_Q/formResponse";
 
 const FORM_FIELDS = {
-  customerName: "ENTRY_ID_HERE",
-  phoneNumber: "ENTRY_ID_HERE",
-  address: "ENTRY_ID_HERE",
-  productName: "ENTRY_ID_HERE",
-  quantity: "ENTRY_ID_HERE",
-  notes: "ENTRY_ID_HERE",
+  customerName: "654362780",
+  phoneNumber: "1650395781",
+  address: "1880747020",
+  productName: "1960638125",
+  quantity: "253835968",
+  notes: "1027403879",
 };
+/* =========================================================
+   OWNER SETUP GUIDE — connecting your Google Form
+   ---------------------------------------------------------
+   1. Go to forms.google.com and create a new form with these
+      fields (plain text, short answer): Customer Name, Phone
+      Number, Address, Product Name, Quantity, Notes.
+
+   2. Click Send → click the link icon → copy the link. It
+      looks like:
+        https://docs.google.com/forms/d/e/XXXX/viewform
+      Change "viewform" at the end to "formResponse" and paste
+      the whole thing into GOOGLE_FORM_ACTION_URL above.
+
+   3. To get the entry IDs for each field:
+        - Click the 3-dot menu (top right of the form) →
+          "Get pre-filled link".
+        - Fill in any dummy answer for every field, then click
+          "Get link" and copy it.
+        - That copied link will contain a bunch of pieces like
+          entry.123456789=your+answer — the number after
+          "entry." is the entry ID for that field.
+        - Match each entry ID to the right field name in
+          FORM_FIELDS above (e.g. the entry ID next to your
+          dummy phone number answer goes into "phoneNumber").
+
+   4. Paste the URL from step 2 into GOOGLE_FORM_ACTION_URL,
+      and paste each entry ID from step 3 into its matching
+      slot in FORM_FIELDS. Save the file.
+
+   5. To view incoming orders: open your Google Form → click
+      the "Responses" tab at the top → click the green Sheets
+      icon. This opens a spreadsheet that fills in
+      automatically every time a customer orders — no extra
+      setup needed.
+   ========================================================= */
 
 
 /* =========================================================
@@ -256,7 +286,7 @@ const PRODUCTS = [
     $("contactHoursDisplay").textContent = OWNER_SETTINGS.businessHours;
 
     const telLink = `tel:${OWNER_SETTINGS.phoneNumberDial}`;
-    const waLink = `https://wa.me/${OWNER_SETTINGS.whatsAppNumber}?text=${encodeURIComponent("Hi! I have a question about Green Basket.")}`;
+    const waLink = `https://wa.me/${OWNER_SETTINGS.whatsAppNumber}?text=${encodeURIComponent("Hi! I have a question about Multan Mart.")}`;
 
     $("callBusinessBtn").setAttribute("href", telLink);
     $("whatsappInquiryBtn").setAttribute("href", waLink);
@@ -606,6 +636,27 @@ const PRODUCTS = [
     btn.disabled = isLoading;
   }
 
+  /* =========================================================
+     WHATSAPP ORDER CONFIRMATION
+     ---------------------------------------------------------
+     After a successful order submission, open WhatsApp in a
+     new tab with a pre-filled confirmation message so the
+     customer can send it straight to the shop.
+     ========================================================= */
+
+  function openWhatsAppConfirmation(orderData) {
+    const message =
+      `Assalam o Alaikum,\n` +
+      `I have placed an order on the Multan Mart website.\n\n` +
+      `Name: ${orderData.customerName}\n` +
+      `Product: ${orderData.productName}\n` +
+      `Quantity: ${orderData.quantity}\n\n` +
+      `Please confirm my order.`;
+
+    const waLink = `https://wa.me/${OWNER_SETTINGS.whatsAppNumber}?text=${encodeURIComponent(message)}`;
+    window.open(waLink, "_blank", "noopener");
+  }
+
   orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -625,11 +676,12 @@ const PRODUCTS = [
       // Let the customer complete the flow normally in the meantime,
       // and leave a clear trail in the console for whoever sets it up.
       console.warn(
-        "Green Basket: GOOGLE_FORM_ACTION_URL / FORM_FIELDS are still placeholders. " +
+        "Multan Mart: GOOGLE_FORM_ACTION_URL / FORM_FIELDS are still placeholders. " +
         "Orders are not being saved anywhere yet. Update these values near the top of script.js.",
         orderData
       );
       showOrderSuccess();
+      openWhatsAppConfirmation(orderData);
       return;
     }
 
@@ -637,8 +689,9 @@ const PRODUCTS = [
     try {
       await submitOrderToGoogleForm(orderData);
       showOrderSuccess();
+      openWhatsAppConfirmation(orderData);
     } catch (err) {
-      console.error("Green Basket: order submission failed.", err);
+      console.error("Multan Mart: order submission failed.", err);
       const summary = $("formErrorSummary");
       summary.textContent = "We couldn't send your order just now. Please check your connection and try again, or call us directly.";
       summary.classList.add("is-visible");
@@ -704,7 +757,7 @@ const PRODUCTS = [
 
   if (!isGoogleFormConfigured()) {
     console.info(
-      "Green Basket: heads up — the Google Form isn't connected yet. " +
+      "Multan Mart: heads up — the Google Form isn't connected yet. " +
       "Open script.js and fill in GOOGLE_FORM_ACTION_URL and FORM_FIELDS near the top " +
       "so orders start reaching your Google Sheet."
     );

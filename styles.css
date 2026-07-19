@@ -1,52 +1,53 @@
 /* =========================================================
-   GREEN BASKET — Neighborhood Grocery Ordering Website
+   MULTAN MART — Grocery & Household Products Ordering Website
    Design tokens
    Color:
-     --paper       #FBF6EC  warm paper background
-     --paper-alt   #F3ECDC  slightly deeper paper for section bands
-     --ink         #2B2A25  near-black warm ink for text
-     --ink-soft    #5C5A4E  secondary text
-     --basket      #2F6B3C  deep produce green (primary)
-     --basket-deep #1F4A2A  pressed / hover state of green
-     --marigold    #E2A93B  warm marigold accent (NOT #D97757)
-     --marigold-deep #B9822A hover state of marigold
-     --line        #DED4BC  hairline borders on paper
+     --paper       #FFF8F2  warm off-white background
+     --paper-alt   #FFF3CD  yellow-tinted band for section contrast (yellow tint)
+     --ink         #1E1E1E  primary text
+     --ink-soft    #555555  secondary text
+     --basket      #E53935  primary red (brand primary — buttons, links, active states)
+     --basket-deep #C62828  red hover/pressed state
+     --marigold    #FFC107  primary yellow (brand accent)
+     --marigold-deep #E6A800 yellow hover/pressed state
+     --line        #FFE5E4  red-tinted hairline borders
      --card        #FFFFFF  card surface
-     --danger      #B3432D  error red, muted not alarming
+     --danger      #C62828  error red (reuses red-hover for clear but on-brand alerts)
    Type:
-     Display: 'Fraunces' (warm, grocer's chalkboard character, used with restraint)
+     Display: 'Manrope' (modern, confident, retail-appropriate)
      Body/UI: 'Inter' (clean, legible, humanist)
    Signature element: the torn "receipt" hero card + circular stamp-check success mark,
-   echoing a grocer's paper receipt and rubber stamp rather than a generic checkmark.
+   echoing a retail receipt and approval stamp.
    ========================================================= */
 
 :root {
-  --paper: #FBF6EC;
-  --paper-alt: #F3ECDC;
-  --ink: #2B2A25;
-  --ink-soft: #5C5A4E;
-  --ink-faint: #8C8874;
-  --basket: #2F6B3C;
-  --basket-line: #2F6B3C;
-  --basket-deep: #1F4A2A;
-  --basket-tint: #E7EFE3;
-  --marigold: #E2A93B;
-  --marigold-deep: #B9822A;
-  --marigold-tint: #FBEED2;
-  --line: #DED4BC;
-  --line-strong: #C9BC9A;
+  --paper: #FFF8F2;
+  --paper-alt: #FFF9E0;
+  --ink: #111111;
+  --ink-soft: #444444;
+  --ink-faint: #6B6B6B;
+  --basket: #FF0000;
+  --basket-line: #FF0000;
+  --basket-deep: #E60000;
+  --basket-tint: #FFE0E0;
+  --marigold: #FFD700;
+  --marigold-deep: #E6C200;
+  --marigold-tint: #FFF6CC;
+  --line: #FFD6D6;
+  --line-strong: #FFB3B3;
   --card: #FFFFFF;
-  --danger: #B3432D;
-  --danger-tint: #F8E7E1;
+  --danger: #E60000;
+  --danger-tint: #FFE0E0;
+  /* rest unchanged */
 
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
-  --shadow-card: 0 1px 2px rgba(43, 42, 37, 0.04), 0 8px 24px -12px rgba(43, 42, 37, 0.18);
-  --shadow-modal: 0 24px 64px -20px rgba(31, 30, 24, 0.35);
-  --shadow-fab: 0 10px 28px -8px rgba(31, 74, 42, 0.45);
+  --shadow-card: 0 1px 2px rgba(30, 30, 30, 0.04), 0 8px 24px -12px rgba(30, 30, 30, 0.16);
+  --shadow-modal: 0 24px 64px -20px rgba(30, 30, 30, 0.35);
+  --shadow-fab: 0 10px 28px -8px rgba(197, 40, 40, 0.42);
 
-  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --max-width: 1180px;
@@ -82,8 +83,9 @@ h1, h2, h3 {
   font-family: var(--font-display);
   color: var(--ink);
   margin: 0;
-  line-height: 1.1;
-  font-weight: 600;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 p { margin: 0; }
@@ -205,7 +207,19 @@ button {
   height: 2px;
   background: var(--ink);
   margin: 0 auto;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* =========================================================
@@ -405,7 +419,7 @@ button {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 22px;
 }
 
@@ -1074,13 +1088,49 @@ textarea { resize: vertical; min-height: 56px; }
 
 /* =========================================================
    RESPONSIVE
+   Breakpoints target: Desktop 1440px+, Laptop 1024px,
+   Tablet 768px, Mobile 320px–767px.
    ========================================================= */
 
+/* ---- Laptop tier (≤1279px): grid steps down from 4 to keep cards comfortable ---- */
+@media (max-width: 1279px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---- Tablet tier (≤1023px): matches the 1024px laptop/tablet boundary ---- */
+@media (max-width: 1023px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- Tablet/mobile shared tier (≤860px): single-column hero, stacked steps ---- */
 @media (max-width: 860px) {
   .hero {
     grid-template-columns: 1fr;
     padding-top: 48px;
     padding-bottom: 56px;
+    text-align: center;
+  }
+
+  .hero-inner {
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-title, .hero-sub {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .hero-receipt { order: -1; margin-bottom: 8px; }
@@ -1091,12 +1141,26 @@ textarea { resize: vertical; min-height: 56px; }
   .contact-row dd { text-align: left; }
 }
 
+/* ---- Explicit 768px tablet boundary: matches spec's named tablet size exactly ---- */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contact-inner {
+    text-align: center;
+  }
+
+  .contact-actions {
+    justify-content: center;
+  }
+
+  .contact-row {
+    text-align: left;
+  }
+}
 @media (max-width: 720px) {
-  .main-nav { display: none; }
-
-  .nav-toggle { display: flex; }
-
-  .main-nav.is-open {
+  .main-nav {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -1105,12 +1169,65 @@ textarea { resize: vertical; min-height: 56px; }
     right: 0;
     background: var(--paper);
     border-bottom: 1px solid var(--line);
-    padding: 16px 28px 22px;
-    gap: 4px;
+    padding: 0 28px;
+    gap: 0;
     box-shadow: var(--shadow-card);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s ease,
+                padding 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear 0.32s;
   }
 
-  .main-nav.is-open a { padding: 10px 0; }
+  .nav-toggle { display: flex; }
+
+  .main-nav.is-open {
+    max-height: 320px;
+    opacity: 1;
+    visibility: visible;
+    padding: 16px 28px 22px;
+    gap: 4px;
+    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.28s ease 0.04s,
+                padding 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear;
+  }
+
+  .main-nav a { padding: 10px 0; }
+
+  .contact-row { flex-direction: column; gap: 4px; }
+  .contact-row dd { text-align: left; }
+
+  .field-row { flex-direction: column; }
+
+  /* ---- Mobile improvements: full-width action buttons ---- */
+  .contact-actions .btn { width: 100%; }
+  .hero-actions .btn { width: 100%; }
+
+  /* ---- FAB clears the home-indicator area on iOS ---- */
+  .fab-wrap { bottom: max(16px, env(safe-area-inset-bottom)); }
+
+  /* ---- Prevents iOS Safari auto-zoom when tapping form fields ---- */
+  input, textarea { font-size: 16px; }
+}
+  .nav-toggle { display: flex; }
+
+  .main-nav.is-open {
+    max-height: 320px;
+    opacity: 1;
+    visibility: visible;
+    padding: 16px 28px 22px;
+    gap: 4px;
+    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.28s ease 0.04s,
+                padding 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear;
+  }
+
+  .main-nav a { padding: 10px 0; }
 
   .contact-row { flex-direction: column; gap: 4px; }
   .contact-row dd { text-align: left; }

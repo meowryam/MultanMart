@@ -30,9 +30,19 @@
       <a href="#how-it-works">How It Works</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-actions">
+      <button class="cart-btn" id="cartToggleBtn" aria-label="Open cart" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+          <circle cx="18" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+          <path d="M2.5 3h2l2.3 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H5.3"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge" hidden>0</span>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -86,23 +96,24 @@
   <div class="section-inner">
     <div class="section-heading">
       <p class="eyebrow">How It Works</p>
-      <h2>Ordering takes about a minute</h2>
+      <h2>Add products, checkout once</h2>
+      <p class="section-lead">Add products to your cart and checkout once — we'll confirm your order.</p>
     </div>
     <ol class="steps">
       <li class="step">
         <span class="step-mark">1</span>
         <h3>Pick what you need</h3>
-        <p>Browse the catalog and tap "Order Now" on anything you'd like.</p>
+        <p>Browse the catalog and tap "Add to Cart" on anything you'd like.</p>
       </li>
       <li class="step">
         <span class="step-mark">2</span>
-        <h3>Tell us where to send it</h3>
-        <p>Fill in your name, phone number, and address in the order form.</p>
+        <h3>Review your cart</h3>
+        <p>Open your cart anytime to adjust quantities, then checkout once with your name, phone, and address.</p>
       </li>
       <li class="step">
         <span class="step-mark">3</span>
         <h3>We take it from here</h3>
-        <p>Your order comes straight to us. We'll call to confirm and arrange delivery or pickup.</p>
+        <p>Your whole order comes straight to us. We'll call to confirm and arrange delivery or pickup.</p>
       </li>
     </ol>
   </div>
@@ -139,7 +150,7 @@
         <a href="#" id="callBusinessBtn" class="btn btn-primary">Call Us</a>
         <a href="#" id="whatsappInquiryBtn" class="btn btn-ghost" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
-      <p class="contact-note">These are for inquiries only — ordering happens through the website above.</p>
+      <p class="contact-note">These are for inquiries only — ordering happens through your cart above.</p>
     </div>
   </div>
 </section>
@@ -203,7 +214,7 @@
         </div>
       </div>
 
-      <button class="btn btn-primary btn-block" id="productModalOrderBtn">Order Now</button>
+      <button class="btn btn-primary btn-block" id="productModalOrderBtn">Add to Cart</button>
     </div>
   </div>
 </div>
@@ -215,23 +226,14 @@
 
     <!-- ---- Form State ---- -->
     <div class="order-modal-state" id="orderFormState">
-      <h3 id="orderModalTitle">Place Your Order</h3>
+      <h3 id="orderModalTitle">Checkout</h3>
       <p class="order-modal-sub">We'll confirm by phone before anything is delivered.</p>
 
+      <div class="checkout-summary" id="checkoutSummary" aria-live="polite">
+        <!-- Rendered by script.js from the cart contents -->
+      </div>
+
       <form id="orderForm" novalidate>
-        <div class="field">
-          <label for="orderProductName">Product</label>
-          <input type="text" id="orderProductName" name="productName" readonly>
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label for="orderQuantity">Quantity</label>
-            <input type="number" id="orderQuantity" name="quantity" min="1" value="1" inputmode="numeric">
-            <span class="field-error" id="error-quantity">Enter a quantity of at least 1.</span>
-          </div>
-        </div>
-
         <div class="field">
           <label for="orderCustomerName">Your Name</label>
           <input type="text" id="orderCustomerName" name="customerName" placeholder="e.g. Ayesha Khan" autocomplete="name">
@@ -283,6 +285,48 @@
     </div>
   </div>
 </div>
+
+<!-- ================= CART DRAWER ================= -->
+<div class="modal-overlay cart-overlay" id="cartOverlay">
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
+    <div class="cart-drawer-header">
+      <h3 id="cartDrawerTitle">Your Cart</h3>
+      <button class="modal-close" id="cartCloseBtn" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerBody">
+      <!-- Rendered by script.js -->
+    </div>
+    <div class="cart-drawer-footer" id="cartDrawerFooter" hidden>
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">Rs. 0</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Delivery</span>
+        <span id="cartDeliveryFee">Rs. 0</span>
+      </div>
+      <div class="cart-summary-row cart-summary-total">
+        <span>Total</span>
+        <span id="cartTotal">Rs. 0</span>
+      </div>
+      <button class="btn btn-primary btn-block" id="cartCheckoutBtn">Proceed to Checkout</button>
+    </div>
+  </aside>
+</div>
+
+<!-- ================= STICKY CART BUTTON (mobile) ================= -->
+<button class="sticky-cart-btn" id="stickyCartBtn" hidden aria-label="Open cart">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="9" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+    <circle cx="18" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+    <path d="M2.5 3h2l2.3 12.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H5.3"/>
+  </svg>
+  <span id="stickyCartCount">0</span>
+  <span class="sticky-cart-label">View Cart</span>
+</button>
+
+<!-- ================= TOASTS ================= -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
 <script src="script.js"></script>
 </body>

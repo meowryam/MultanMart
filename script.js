@@ -12,6 +12,9 @@ const OWNER_SETTINGS = {
   businessHours: "Mon – Sat, 9:00 AM – 9:00 PM",
 };
 
+const CART_STORAGE_KEY = "multanMartCart";
+const DELIVERY_FEE = 150;
+
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8Osj3Dm2Vqi-1ESWPm4cOwHViXwPl9a5qJ-027yZhtuAU_Q/formResponse";
 
 const FORM_FIELDS = {
@@ -50,6 +53,169 @@ const PRODUCTS = [
   function getProductById(id) { return PRODUCTS.find((p) => p.id === id); }
   function stockPillClass(stock) { if (stock === "low") return "is-low"; if (stock === "out") return "is-out"; return ""; }
 
+  /* ---------------------------------------------------------
+     CART STATE
+     --------------------------------------------------------- */
+  let cart = [];
+
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      cart = Array.isArray(parsed) ? parsed.filter((item) => item && item.id && item.quantity > 0) : [];
+    } catch (err) {
+      console.warn("Multan Mart: couldn't read saved cart, starting fresh.", err);
+      cart = [];
+    }
+  }
+
+  function saveCart() {
+    try {
+      if (cart.length === 0) { localStorage.removeItem(CART_STORAGE_KEY); }
+      else { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); }
+    } catch (err) {
+      console.warn("Multan Mart: couldn't save cart to localStorage.", err);
+    }
+  }
+
+  function getCartCount() {
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  function getCartSubtotal() {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }
+
+  function findCartItem(id) { return cart.find((item) => item.id === id); }
+
+  function addToCart(product, quantity) {
+    const qty = Math.max(1, parseInt(quantity, 10) || 1);
+    const existing = findCartItem(product.id);
+    if (existing) { existing.quantity += qty; }
+    else {
+      cart.push({ id: product.id, name: product.name, price: product.price, unit: product.unit, quantity: qty });
+    }
+    saveCart();
+    renderCartUI();
+    showToast(`✓ ${product.name} added to cart`);
+  }
+
+  function updateCartQuantity(id, newQuantity) {
+    const item = findCartItem(id);
+    if (!item) return;
+    const qty = parseInt(newQuantity, 10) || 0;
+    if (qty <= 0) { removeFromCart(id); return; }
+    item.quantity = qty;
+    saveCart();
+    renderCartUI();
+    showToast("✓ Quantity updated");
+  }
+
+  function removeFromCart(id) {
+    const item = findCartItem(id);
+    cart = cart.filter((i) => i.id !== id);
+    saveCart();
+    renderCartUI();
+    if (item) showToast(`✓ ${item.name} removed`);
+  }
+
+  function clearCart() {
+    cart = [];
+    saveCart();
+    renderCartUI();
+  }
+
+  /* ---------------------------------------------------------
+     CART RENDERING
+     --------------------------------------------------------- */
+  function renderCartBadge() {
+    const badge = $("cartBadge");
+    const count = getCartCount();
+    badge.textContent = String(count);
+    badge.hidden = count === 0;
+  }
+
+  function renderStickyCartBtn() {
+    const btn = $("stickyCartBtn");
+    const count = getCartCount();
+    $("stickyCartCount").textContent = String(count);
+    btn.hidden = count === 0;
+  }
+
+  function cartItemRowHTML(item) {
+    const lineTotal = item.price * item.quantity;
+    return `
+      <div class="cart-item" data-id="${item.id}">
+        <div class="cart-item-info">
+          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-price">${formatPrice(item.price)} × ${item.quantity} = ${formatPrice(lineTotal)}</span>
+        </div>
+        <div class="cart-item-controls">
+          <div class="quantity-stepper quantity-stepper-sm" data-id="${item.id}">
+            <button type="button" class="stepper-btn" data-cart-action="decrease" data-id="${item.id}" aria-label="Decrease quantity of ${item.name}">−</button>
+            <span class="stepper-value" aria-live="polite">${item.quantity}</span>
+            <button type="button" class="stepper-btn" data-cart-action="increase" data-id="${item.id}" aria-label="Increase quantity of ${item.name}">+</button>
+          </div>
+          <button type="button" class="cart-item-remove" data-cart-action="remove" data-id="${item.id}" aria-label="Remove ${item.name} from cart">Remove</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function cartEmptyStateHTML() {
+    return `
+      <div class="cart-empty-state">
+        <span class="cart-empty-icon" aria-hidden="true">🛒</span>
+        <p class="cart-empty-title">Your cart is empty</p>
+        <p class="cart-empty-sub">Browse products to start shopping.</p>
+        <button type="button" class="btn btn-ghost" id="cartContinueShoppingBtn">Continue Shopping</button>
+      </div>
+    `;
+  }
+
+  function renderCartDrawer() {
+    const body = $("cartDrawerBody");
+    const footer = $("cartDrawerFooter");
+    if (cart.length === 0) {
+      body.innerHTML = cartEmptyStateHTML();
+      footer.hidden = true;
+      const continueBtn = $("cartContinueShoppingBtn");
+      if (continueBtn) continueBtn.addEventListener("click", () => closeModal(cartOverlay));
+      return;
+    }
+    body.innerHTML = cart.map(cartItemRowHTML).join("");
+    footer.hidden = false;
+    const subtotal = getCartSubtotal();
+    const total = subtotal + DELIVERY_FEE;
+    $("cartSubtotal").textContent = formatPrice(subtotal);
+    $("cartDeliveryFee").textContent = formatPrice(DELIVERY_FEE);
+    $("cartTotal").textContent = formatPrice(total);
+  }
+
+  function renderCartUI() {
+    renderCartBadge();
+    renderStickyCartBtn();
+    renderCartDrawer();
+  }
+
+  /* ---------------------------------------------------------
+     TOASTS
+     --------------------------------------------------------- */
+  function showToast(message) {
+    const container = $("toastContainer");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+    setTimeout(() => {
+      toast.classList.remove("is-visible");
+      toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+      setTimeout(() => toast.remove(), 500);
+    }, 2400);
+  }
+
   function applyOwnerSettings() {
     $("contactPhoneDisplay").textContent = OWNER_SETTINGS.phoneNumberDisplay;
     $("contactWhatsAppDisplay").textContent = OWNER_SETTINGS.whatsAppNumberDisplay;
@@ -83,8 +249,8 @@ const PRODUCTS = [
             <span class="product-card-unit"> · ${product.unit}</span>
           </div>
           <div class="product-card-footer">
-            <button class="order-now-btn" data-action="order-now" data-id="${product.id}" ${outOfStock ? "disabled" : ""}>
-              ${outOfStock ? "Out of Stock" : "Order Now"}
+            <button class="add-to-cart-btn" data-action="add-to-cart" data-id="${product.id}" ${outOfStock ? "disabled" : ""}>
+              ${outOfStock ? "Out of Stock" : "Add to Cart"}
             </button>
           </div>
         </div>
@@ -147,7 +313,10 @@ const PRODUCTS = [
     if (!target) return;
     const productId = target.dataset.id;
     if (target.dataset.action === "open-product") { openProductModal(productId); }
-    else if (target.dataset.action === "order-now") { openOrderModal(getProductById(productId)); }
+    else if (target.dataset.action === "add-to-cart") {
+      const product = getProductById(productId);
+      if (product) addToCart(product, 1);
+    }
   });
 
   productGrid.addEventListener("keydown", (e) => {
@@ -195,7 +364,7 @@ const PRODUCTS = [
     $("productModalQty").value = 1;
     const orderBtn = $("productModalOrderBtn");
     if (product.stock === "out") { orderBtn.textContent = "Out of Stock"; orderBtn.disabled = true; }
-    else { orderBtn.textContent = "Order Now"; orderBtn.disabled = false; }
+    else { orderBtn.textContent = "Add to Cart"; orderBtn.disabled = false; }
     openModal(productModalOverlay);
   }
   $("productModalClose").addEventListener("click", () => closeModal(productModalOverlay));
@@ -214,22 +383,20 @@ const PRODUCTS = [
   $("productModalOrderBtn").addEventListener("click", () => {
     if (!currentProductInModal) return;
     const qty = parseInt($("productModalQty").value, 10) || 1;
+    addToCart(currentProductInModal, qty);
     closeModal(productModalOverlay);
-    setTimeout(() => openOrderModal(currentProductInModal, qty), 150);
   });
 
   const orderModalOverlay = $("orderModalOverlay");
   const orderFormState = $("orderFormState");
   const orderSuccessState = $("orderSuccessState");
   const orderForm = $("orderForm");
-  let currentOrderProduct = null;
 
   function resetOrderForm() {
     orderForm.reset();
     document.querySelectorAll(".field.has-error").forEach((f) => f.classList.remove("has-error"));
     $("formErrorSummary").classList.remove("is-visible");
     $("formErrorSummary").textContent = "";
-    $("orderQuantity").value = 1;
   }
   function showOrderForm() { orderSuccessState.hidden = true; orderFormState.hidden = false; }
   function showOrderSuccess() {
@@ -244,21 +411,35 @@ const PRODUCTS = [
       el.style.animation = "";
     });
   }
-  function openOrderModal(product, quantity) {
-    currentOrderProduct = product;
+
+  function renderCheckoutSummary() {
+    const container = $("checkoutSummary");
+    const subtotal = getCartSubtotal();
+    const total = subtotal + DELIVERY_FEE;
+    container.innerHTML = `
+      <ul class="checkout-summary-list">
+        ${cart.map((item) => `
+          <li class="checkout-summary-item">
+            <span>${item.name} <span class="checkout-summary-qty">× ${item.quantity}</span></span>
+            <span>${formatPrice(item.price * item.quantity)}</span>
+          </li>
+        `).join("")}
+      </ul>
+      <div class="checkout-summary-totals">
+        <div class="cart-summary-row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
+        <div class="cart-summary-row"><span>Delivery</span><span>${formatPrice(DELIVERY_FEE)}</span></div>
+        <div class="cart-summary-row cart-summary-total"><span>Total</span><span>${formatPrice(total)}</span></div>
+      </div>
+    `;
+  }
+
+  function openCheckoutModal() {
+    if (cart.length === 0) return;
     resetOrderForm();
     showOrderForm();
-    $("orderProductName").value = product.name;
-    $("orderQuantity").value = quantity && quantity > 0 ? quantity : 1;
+    renderCheckoutSummary();
     openModal(orderModalOverlay);
     setTimeout(() => $("orderCustomerName").focus(), 50);
-  }
-  function openOrderModalEmpty() {
-    currentOrderProduct = null;
-    resetOrderForm();
-    showOrderForm();
-    $("orderProductName").value = "";
-    openModal(orderModalOverlay);
   }
   $("orderModalClose").addEventListener("click", () => closeModal(orderModalOverlay));
   $("orderCancelBtn").addEventListener("click", () => closeModal(orderModalOverlay));
@@ -274,19 +455,13 @@ const PRODUCTS = [
     const errors = [];
     const name = $("orderCustomerName").value.trim();
     const phone = $("orderPhoneNumber").value.trim();
-    const quantity = parseInt($("orderQuantity").value, 10);
-    const productName = $("orderProductName").value.trim();
     const nameValid = name.length > 0;
     setFieldError("orderCustomerName", !nameValid);
     if (!nameValid) { isValid = false; errors.push("your name"); }
     const phoneValid = phone.length > 0;
     setFieldError("orderPhoneNumber", !phoneValid);
     if (!phoneValid) { isValid = false; errors.push("a phone number"); }
-    const quantityValid = Number.isFinite(quantity) && quantity >= 1;
-    setFieldError("orderQuantity", !quantityValid);
-    if (!quantityValid) { isValid = false; errors.push("a quantity of at least 1"); }
-    const productValid = productName.length > 0;
-    if (!productValid) { isValid = false; errors.push("a product"); }
+    if (cart.length === 0) { isValid = false; errors.push("at least one product in your cart"); }
     const summary = $("formErrorSummary");
     if (!isValid) {
       summary.textContent = `Please provide ${errors.join(", ")} before submitting.`;
@@ -297,9 +472,13 @@ const PRODUCTS = [
     }
     return isValid;
   }
-  ["orderCustomerName", "orderPhoneNumber", "orderQuantity"].forEach((fieldId) => {
+  ["orderCustomerName", "orderPhoneNumber"].forEach((fieldId) => {
     $(fieldId).addEventListener("input", () => setFieldError(fieldId, false));
   });
+
+  function buildOrderSummaryString() {
+    return cart.map((item) => `${item.name} x${item.quantity}`).join(", ");
+  }
 
   function buildGoogleFormBody(orderData) {
     const body = new URLSearchParams();
@@ -307,7 +486,7 @@ const PRODUCTS = [
     body.append(FORM_FIELDS.phoneNumber, orderData.phoneNumber);
     body.append(FORM_FIELDS.address, orderData.address);
     body.append(FORM_FIELDS.productName, orderData.productName);
-    body.append(FORM_FIELDS.quantity, String(orderData.quantity));
+    body.append(FORM_FIELDS.quantity, orderData.quantity);
     body.append(FORM_FIELDS.notes, orderData.notes);
     return body;
   }
@@ -329,12 +508,14 @@ const PRODUCTS = [
     btn.disabled = isLoading;
   }
   function openWhatsAppConfirmation(orderData) {
+    const itemLines = cart.map((item) => `• ${item.name} x${item.quantity}`).join("\n");
+    const total = getCartSubtotal() + DELIVERY_FEE;
     const message =
-      `Assalam o Alaikum,\n` +
-      `I have placed an order on the Multan Mart website.\n\n` +
-      `Name: ${orderData.customerName}\n` +
-      `Product: ${orderData.productName}\n` +
-      `Quantity: ${orderData.quantity}\n\n` +
+      `Assalam o Alaikum,\n\n` +
+      `I placed an order through Multan Mart.\n\n` +
+      `Name: ${orderData.customerName}\n\n` +
+      `Items:\n${itemLines}\n\n` +
+      `Total: ${formatPrice(total)}\n\n` +
       `Please confirm my order.`;
     const waLink = `https://wa.me/${OWNER_SETTINGS.whatsAppNumber}?text=${encodeURIComponent(message)}`;
     window.open(waLink, "_blank", "noopener");
@@ -344,8 +525,8 @@ const PRODUCTS = [
     e.preventDefault();
     if (!validateOrderForm()) return;
     const orderData = {
-      productName: $("orderProductName").value.trim(),
-      quantity: parseInt($("orderQuantity").value, 10) || 1,
+      productName: buildOrderSummaryString(),
+      quantity: `Total Items: ${getCartCount()}`,
       customerName: $("orderCustomerName").value.trim(),
       phoneNumber: $("orderPhoneNumber").value.trim(),
       address: $("orderAddress").value.trim(),
@@ -358,6 +539,7 @@ const PRODUCTS = [
       );
       showOrderSuccess();
       openWhatsAppConfirmation(orderData);
+      clearCart();
       return;
     }
     setSubmitLoading(true);
@@ -365,6 +547,7 @@ const PRODUCTS = [
       await submitOrderToGoogleForm(orderData);
       showOrderSuccess();
       openWhatsAppConfirmation(orderData);
+      clearCart();
     } catch (err) {
       console.error("Multan Mart: order submission failed.", err);
       const summary = $("formErrorSummary");
@@ -373,6 +556,54 @@ const PRODUCTS = [
     } finally {
       setSubmitLoading(false);
     }
+  });
+
+  /* ---------------------------------------------------------
+     CART DRAWER WIRING
+     --------------------------------------------------------- */
+  const cartOverlay = $("cartOverlay");
+  const cartDrawerBody = $("cartDrawerBody");
+
+  $("cartToggleBtn").addEventListener("click", () => openModal(cartOverlay));
+  $("cartCloseBtn").addEventListener("click", () => closeModal(cartOverlay));
+  $("stickyCartBtn").addEventListener("click", () => openModal(cartOverlay));
+
+  cartDrawerBody.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-cart-action]");
+    if (!target) return;
+    const id = target.dataset.id;
+    const action = target.dataset.cartAction;
+    const item = findCartItem(id);
+    if (!item) return;
+    if (action === "increase") { updateCartQuantity(id, item.quantity + 1); }
+    else if (action === "decrease") { updateCartQuantity(id, item.quantity - 1); }
+    else if (action === "remove") { removeFromCart(id); }
+  });
+
+  $("cartCheckoutBtn").addEventListener("click", () => {
+    closeModal(cartOverlay);
+    setTimeout(openCheckoutModal, 150);
+  });
+
+  // Simple focus trap: while a modal/drawer overlay is open, keep Tab
+  // cycling within its focusable elements instead of escaping to the page.
+  function getFocusableEls(container) {
+    return Array.from(
+      container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    ).filter((el) => !el.disabled && el.offsetParent !== null);
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const visibleOverlay = document.querySelector(".modal-overlay.is-visible");
+    if (!visibleOverlay) return;
+    const container = visibleOverlay.querySelector(".modal, .cart-drawer");
+    if (!container) return;
+    const focusables = getFocusableEls(container);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
   const fabWrap = $("fabWrap");
@@ -402,6 +633,8 @@ const PRODUCTS = [
 
   applyOwnerSettings();
   renderCatalog();
+  loadCart();
+  renderCartUI();
 
   if (!isGoogleFormConfigured()) {
     console.info(

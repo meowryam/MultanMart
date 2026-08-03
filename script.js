@@ -1,5 +1,16 @@
 /* =========================================================
    MULTAN MART — script.js
+   =========================================================
+
+
+   CONFIG & DATA
+   Cart logic (state)
+   Rendering
+   UI interactions
+
+   Products are loaded once at startup from products.json (generated
+   from the Excel inventory via tools/import_inventory.py). The Excel
+   file is never read by the website.
    ========================================================= */
 
 
@@ -15,6 +26,11 @@ const OWNER_SETTINGS = {
 const CART_STORAGE_KEY = "multanMartCart";
 const DELIVERY_FEE = 150;
 
+const PRODUCTS_URL = "products.json";
+const PLACEHOLDER_IMAGE = "images/placeholder.webp";
+const PRODUCT_DEFAULT_DESCRIPTION =
+  "A quality product available now at Multan Mart. Order through your cart and we'll confirm before delivery.";
+
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8Osj3Dm2Vqi-1ESWPm4cOwHViXwPl9a5qJ-027yZhtuAU_Q/formResponse";
 
 const FORM_FIELDS = {
@@ -26,32 +42,78 @@ const FORM_FIELDS = {
   notes: "1027403879",
 };
 
-const PRODUCTS = [
-  { id: "tomato-vine", name: "Vine Tomatoes", category: "produce", price: 180, unit: "per kg", stock: "in", description: "Ripe, red, and grown nearby — picked within the last two days for the best flavor." },
-  { id: "spinach-bunch", name: "Fresh Spinach", category: "produce", price: 60, unit: "per bunch", stock: "in", description: "Tender leafy spinach, washed and ready for your favorite saag or salad." },
-  { id: "banana-dozen", name: "Bananas", category: "produce", price: 140, unit: "per dozen", stock: "low", description: "Sweet, ripe bananas — a lunchbox favorite for kids and grown-ups alike." },
-  { id: "potato-5kg", name: "Potatoes", category: "produce", price: 350, unit: "5 kg bag", stock: "in", description: "All-purpose potatoes, great for curries, fries, or a Sunday roast." },
-  { id: "eggs-dozen", name: "Farmhouse Eggs", category: "dairy", price: 320, unit: "per dozen", stock: "in", description: "Free-range eggs from a nearby farm, delivered fresh every week." },
-  { id: "milk-1l", name: "Fresh Milk", category: "dairy", price: 210, unit: "1 litre", stock: "in", description: "Pasteurized whole milk, delivered cold and ready for your morning chai." },
-  { id: "yogurt-500g", name: "Plain Yogurt", category: "dairy", price: 150, unit: "500 g tub", stock: "out", description: "Thick, tangy yogurt made the traditional way. Great with meals or on its own." },
-  { id: "cheddar-block", name: "Cheddar Cheese", category: "dairy", price: 890, unit: "250 g block", stock: "low", description: "A mild, creamy cheddar that melts beautifully — perfect for sandwiches and toasties." },
-  { id: "bread-wheat", name: "Whole Wheat Bread", category: "bakery", price: 170, unit: "per loaf", stock: "in", description: "Soft, wholesome bread baked fresh each morning by our neighborhood baker." },
-  { id: "bun-pack6", name: "Sesame Buns", category: "bakery", price: 130, unit: "pack of 6", stock: "in", description: "Soft sesame-topped buns, ideal for burgers or a quick sandwich." },
-  { id: "croissant-4", name: "Butter Croissants", category: "bakery", price: 320, unit: "pack of 4", stock: "low", description: "Flaky, buttery croissants baked fresh — a small treat for the weekend table." },
-  { id: "rice-basmati-5kg", name: "Basmati Rice", category: "pantry", price: 1450, unit: "5 kg bag", stock: "in", description: "Long-grain aged basmati rice, fragrant and fluffy once cooked." },
-  { id: "cooking-oil-3l", name: "Cooking Oil", category: "pantry", price: 1650, unit: "3 litre can", stock: "in", description: "A light, everyday cooking oil suited to frying, sautéing, and baking." },
-  { id: "lentils-1kg", name: "Red Lentils", category: "pantry", price: 320, unit: "1 kg pack", stock: "in", description: "Quick-cooking red lentils (masoor daal), a pantry staple for weeknight meals." },
-  { id: "tea-500g", name: "Black Tea Leaves", category: "pantry", price: 480, unit: "500 g pack", stock: "low", description: "A robust, full-bodied black tea blend — the everyday cup for your kitchen." },
-];
+// Category slug -> display label. Object key order is also the order in
+// which categories appear in the filter bar and in the catalogue.
+const CATEGORY_LABELS = {
+  cleaning: "Cleaning",
+  beverages: "Beverages",
+  confectionery: "Confectionery",
+  cooking: "Cooking",
+  "cooking-oil": "Cooking Oil",
+  diapers: "Diapers",
+  "baby-care": "Baby Care",
+  foods: "Foods",
+  grocery: "Grocery",
+  "hair-care": "Hair Care",
+  "home-care": "Home Care",
+  laundry: "Laundry",
+  "milk-dairy": "Milk & Dairy",
+  "oral-care": "Oral Care",
+  others: "Others",
+  "household-paper": "Household & Paper",
+  razors: "Razors",
+  "skin-care": "Skin Care",
+  "skin-cleansing": "Soap & Cleansing",
+  snacks: "Snacks",
+  spices: "Spices",
+  stationery: "Stationery",
+};
 
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
   const formatPrice = (amount) => `Rs. ${Number(amount).toLocaleString("en-PK")}`;
-  const STOCK_LABELS = { in: "In Stock", low: "Low Stock", out: "Out of Stock" };
-  const CATEGORY_LABELS = { produce: "Produce", dairy: "Dairy & Eggs", bakery: "Bakery", pantry: "Pantry" };
-  function getProductById(id) { return PRODUCTS.find((p) => p.id === id); }
-  function stockPillClass(stock) { if (stock === "low") return "is-low"; if (stock === "out") return "is-out"; return ""; }
+
+  function escapeHTML(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  /* ---------------------------------------------------------
+     PRODUCT DATA
+     --------------------------------------------------------- */
+  let products = [];
+
+  function getProductById(id) {
+    return products.find((p) => String(p.id) === String(id));
+  }
+
+  function isProductInStock(product) {
+    return Boolean(product) && Number(product.stock) > 0;
+  }
+
+  function getCategoriesInOrder() {
+    return Object.keys(CATEGORY_LABELS).filter((slug) =>
+      products.some((p) => p.category === slug)
+    );
+  }
+
+  async function loadProducts() {
+    try {
+      const response = await fetch(PRODUCTS_URL, { cache: "no-cache" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      products = Array.isArray(data) ? data : [];
+    } catch (err) {
+      console.error("Multan Mart: could not load products.json.", err);
+      products = [];
+    }
+    return products;
+  }
 
   /* ---------------------------------------------------------
      CART STATE
@@ -86,14 +148,27 @@ const PRODUCTS = [
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
-  function findCartItem(id) { return cart.find((item) => item.id === id); }
+  function findCartItem(id) {
+    return cart.find((item) => String(item.id) === String(id));
+  }
 
   function addToCart(product, quantity) {
-    const qty = Math.max(1, parseInt(quantity, 10) || 1);
+    if (!isProductInStock(product)) {
+      showToast("Sorry, this item is out of stock");
+      return;
+    }
     const existing = findCartItem(product.id);
-    if (existing) { existing.quantity += qty; }
+    const currentQty = existing ? existing.quantity : 0;
+    const maxAddable = Number(product.stock) - currentQty;
+    if (maxAddable <= 0) {
+      showToast("No more of this item in stock");
+      return;
+    }
+    const qty = Math.max(1, parseInt(quantity, 10) || 1);
+    const addQty = Math.min(qty, maxAddable);
+    if (existing) { existing.quantity += addQty; }
     else {
-      cart.push({ id: product.id, name: product.name, price: product.price, unit: product.unit, quantity: qty });
+      cart.push({ id: product.id, name: product.name, price: product.price, quantity: addQty });
     }
     saveCart();
     renderCartUI();
@@ -105,6 +180,17 @@ const PRODUCTS = [
     if (!item) return;
     const qty = parseInt(newQuantity, 10) || 0;
     if (qty <= 0) { removeFromCart(id); return; }
+    const product = getProductById(id);
+    if (product && qty > item.quantity) {
+      const maxQty = Number(product.stock);
+      if (maxQty > 0 && qty > maxQty) {
+        item.quantity = maxQty;
+        saveCart();
+        renderCartUI();
+        showToast(`Only ${maxQty} in stock`);
+        return;
+      }
+    }
     item.quantity = qty;
     saveCart();
     renderCartUI();
@@ -113,7 +199,7 @@ const PRODUCTS = [
 
   function removeFromCart(id) {
     const item = findCartItem(id);
-    cart = cart.filter((i) => i.id !== id);
+    cart = cart.filter((i) => String(i.id) !== String(id));
     saveCart();
     renderCartUI();
     if (item) showToast(`✓ ${item.name} removed`);
@@ -126,7 +212,127 @@ const PRODUCTS = [
   }
 
   /* ---------------------------------------------------------
-     CART RENDERING
+     RENDERING — catalog
+     --------------------------------------------------------- */
+  const productGrid = $("productGrid");
+  let activeFilter = "all";
+
+  function stockLabel(product) {
+    return isProductInStock(product) ? "Available" : "Out of Stock";
+  }
+
+  function stockPillClass(product) {
+    return isProductInStock(product) ? "" : "is-out";
+  }
+
+  function productImageHTML(product) {
+    return `<img class="product-image" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}'">`;
+  }
+
+  function productCardHTML(product) {
+    const outOfStock = !isProductInStock(product);
+    return `
+      <article class="product-card${outOfStock ? " is-out-of-stock" : ""}" data-id="${product.id}" data-category="${product.category}">
+        <div class="product-card-media" data-action="open-product" data-id="${product.id}">
+          <div class="product-image-placeholder">
+            ${productImageHTML(product)}
+          </div>
+          <span class="stock-pill ${stockPillClass(product)}">${stockLabel(product)}</span>
+        </div>
+        <div class="product-card-body">
+          <span class="category-pill">${CATEGORY_LABELS[product.category] || product.category}</span>
+          <span class="product-card-name" data-action="open-product" data-id="${product.id}" role="button" tabindex="0">${escapeHTML(product.name)}</span>
+          <div>
+            <span class="product-card-price">${formatPrice(product.price)}</span>
+          </div>
+          <div class="product-card-footer">
+            <button class="add-to-cart-btn" data-action="add-to-cart" data-id="${product.id}" ${outOfStock ? "disabled" : ""}>
+              ${outOfStock ? "Out of Stock" : "Add to Cart"}
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function categoryGroupHTML(category, productsInCategory) {
+    return `
+      <div class="category-group" data-category-group="${category}">
+        <h3 class="category-group-title">${CATEGORY_LABELS[category] || category}</h3>
+        <div class="category-row">
+          ${productsInCategory.map(productCardHTML).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCatalog() {
+    const filtered = activeFilter === "all" ? products : products.filter((p) => p.category === activeFilter);
+    if (filtered.length === 0) {
+      productGrid.innerHTML = `<p class="empty-state">No products in this category right now — check back soon.</p>`;
+      return;
+    }
+    const categoriesToShow = activeFilter === "all"
+      ? getCategoriesInOrder()
+      : [activeFilter];
+    productGrid.innerHTML = categoriesToShow
+      .map((category) => {
+        const productsInCategory = filtered.filter((p) => p.category === category);
+        if (productsInCategory.length === 0) return "";
+        return categoryGroupHTML(category, productsInCategory);
+      })
+      .join("");
+  }
+
+  function renderFilters() {
+    const filterBar = document.querySelector(".catalog-filters");
+    if (!filterBar) return;
+    const chips = [`<button class="filter-chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>`];
+    getCategoriesInOrder().forEach((slug) => {
+      chips.push(
+        `<button class="filter-chip" data-filter="${slug}" role="tab" aria-selected="false">${CATEGORY_LABELS[slug]}</button>`
+      );
+    });
+    filterBar.innerHTML = chips.join("");
+  }
+
+  function setActiveFilter(filter) {
+    activeFilter = filter;
+    document.querySelectorAll(".filter-chip").forEach((chip) => {
+      const isActive = chip.dataset.filter === filter;
+      chip.classList.toggle("is-active", isActive);
+      chip.setAttribute("aria-selected", String(isActive));
+    });
+    renderCatalog();
+  }
+
+  document.querySelector(".catalog-filters").addEventListener("click", (e) => {
+    const chip = e.target.closest(".filter-chip");
+    if (!chip) return;
+    setActiveFilter(chip.dataset.filter);
+  });
+
+  productGrid.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-action]");
+    if (!target) return;
+    const productId = target.dataset.id;
+    if (target.dataset.action === "open-product") { openProductModal(productId); }
+    else if (target.dataset.action === "add-to-cart") {
+      const product = getProductById(productId);
+      if (product) addToCart(product, 1);
+    }
+  });
+
+  productGrid.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const target = e.target.closest("[data-action='open-product']");
+    if (!target) return;
+    e.preventDefault();
+    openProductModal(target.dataset.id);
+  });
+
+  /* ---------------------------------------------------------
+     RENDERING — cart
      --------------------------------------------------------- */
   function renderCartBadge() {
     const badge = $("cartBadge");
@@ -147,16 +353,16 @@ const PRODUCTS = [
     return `
       <div class="cart-item" data-id="${item.id}">
         <div class="cart-item-info">
-          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-name">${escapeHTML(item.name)}</span>
           <span class="cart-item-price">${formatPrice(item.price)} × ${item.quantity} = ${formatPrice(lineTotal)}</span>
         </div>
         <div class="cart-item-controls">
           <div class="quantity-stepper quantity-stepper-sm" data-id="${item.id}">
-            <button type="button" class="stepper-btn" data-cart-action="decrease" data-id="${item.id}" aria-label="Decrease quantity of ${item.name}">−</button>
+            <button type="button" class="stepper-btn" data-cart-action="decrease" data-id="${item.id}" aria-label="Decrease quantity of ${escapeHTML(item.name)}">−</button>
             <span class="stepper-value" aria-live="polite">${item.quantity}</span>
-            <button type="button" class="stepper-btn" data-cart-action="increase" data-id="${item.id}" aria-label="Increase quantity of ${item.name}">+</button>
+            <button type="button" class="stepper-btn" data-cart-action="increase" data-id="${item.id}" aria-label="Increase quantity of ${escapeHTML(item.name)}">+</button>
           </div>
-          <button type="button" class="cart-item-remove" data-cart-action="remove" data-id="${item.id}" aria-label="Remove ${item.name} from cart">Remove</button>
+          <button type="button" class="cart-item-remove" data-cart-action="remove" data-id="${item.id}" aria-label="Remove ${escapeHTML(item.name)} from cart">Remove</button>
         </div>
       </div>
     `;
@@ -230,103 +436,9 @@ const PRODUCTS = [
     $("footerYear").textContent = new Date().getFullYear();
   }
 
-  const productGrid = $("productGrid");
-  let activeFilter = "all";
-
-  function productCardHTML(product) {
-    const outOfStock = product.stock === "out";
-    return `
-      <article class="product-card" data-id="${product.id}" data-category="${product.category}">
-        <div class="product-card-media" data-action="open-product" data-id="${product.id}">
-          <div class="product-image-placeholder" aria-hidden="true"></div>
-          <span class="stock-pill ${stockPillClass(product.stock)}">${STOCK_LABELS[product.stock]}</span>
-        </div>
-        <div class="product-card-body">
-          <span class="category-pill">${CATEGORY_LABELS[product.category]}</span>
-          <span class="product-card-name" data-action="open-product" data-id="${product.id}" role="button" tabindex="0">${product.name}</span>
-          <div>
-            <span class="product-card-price">${formatPrice(product.price)}</span>
-            <span class="product-card-unit"> · ${product.unit}</span>
-          </div>
-          <div class="product-card-footer">
-            <button class="add-to-cart-btn" data-action="add-to-cart" data-id="${product.id}" ${outOfStock ? "disabled" : ""}>
-              ${outOfStock ? "Out of Stock" : "Add to Cart"}
-            </button>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  const CATEGORY_ORDER = ["produce", "dairy", "bakery", "pantry"];
-
-  function categoryGroupHTML(category, products) {
-    return `
-      <div class="category-group" data-category-group="${category}">
-        <h3 class="category-group-title">${CATEGORY_LABELS[category]}</h3>
-        <div class="category-row">
-          ${products.map(productCardHTML).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  function renderCatalog() {
-    const filtered = activeFilter === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeFilter);
-    if (filtered.length === 0) {
-      productGrid.innerHTML = `<p class="empty-state">No products in this category right now — check back soon.</p>`;
-      return;
-    }
-
-    // Group products by category (in a fixed display order) so the catalog
-    // can render as category rows — CSS decides whether each row scrolls
-    // horizontally (mobile) or the whole thing lays out as one grid (desktop).
-    const categoriesToShow = activeFilter === "all"
-      ? CATEGORY_ORDER
-      : [activeFilter];
-
-    productGrid.innerHTML = categoriesToShow
-      .map((category) => {
-        const productsInCategory = filtered.filter((p) => p.category === category);
-        if (productsInCategory.length === 0) return "";
-        return categoryGroupHTML(category, productsInCategory);
-      })
-      .join("");
-  }
-
-  function setActiveFilter(filter) {
-    activeFilter = filter;
-    document.querySelectorAll(".filter-chip").forEach((chip) => {
-      const isActive = chip.dataset.filter === filter;
-      chip.classList.toggle("is-active", isActive);
-      chip.setAttribute("aria-selected", String(isActive));
-    });
-    renderCatalog();
-  }
-
-  document.querySelectorAll(".filter-chip").forEach((chip) => {
-    chip.addEventListener("click", () => setActiveFilter(chip.dataset.filter));
-  });
-
-  productGrid.addEventListener("click", (e) => {
-    const target = e.target.closest("[data-action]");
-    if (!target) return;
-    const productId = target.dataset.id;
-    if (target.dataset.action === "open-product") { openProductModal(productId); }
-    else if (target.dataset.action === "add-to-cart") {
-      const product = getProductById(productId);
-      if (product) addToCart(product, 1);
-    }
-  });
-
-  productGrid.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter" && e.key !== " ") return;
-    const target = e.target.closest("[data-action='open-product']");
-    if (!target) return;
-    e.preventDefault();
-    openProductModal(target.dataset.id);
-  });
-
+  /* ---------------------------------------------------------
+     MODALS
+     --------------------------------------------------------- */
   let lastFocusedElement = null;
   function openModal(overlay) {
     lastFocusedElement = document.activeElement;
@@ -348,6 +460,9 @@ const PRODUCTS = [
     document.querySelectorAll(".modal-overlay.is-visible").forEach(closeModal);
   });
 
+  /* ---------------------------------------------------------
+     PRODUCT DETAIL MODAL
+     --------------------------------------------------------- */
   const productModalOverlay = $("productModalOverlay");
   let currentProductInModal = null;
   function openProductModal(productId) {
@@ -355,16 +470,21 @@ const PRODUCTS = [
     if (!product) return;
     currentProductInModal = product;
     $("productModalName").textContent = product.name;
-    $("productModalPrice").textContent = `${formatPrice(product.price)} · ${product.unit}`;
-    $("productModalDesc").textContent = product.description;
-    $("productModalCategory").textContent = CATEGORY_LABELS[product.category];
+    $("productModalPrice").textContent = formatPrice(product.price);
+    $("productModalDesc").textContent = PRODUCT_DEFAULT_DESCRIPTION;
+    $("productModalCategory").textContent = CATEGORY_LABELS[product.category] || product.category;
     const stockPill = $("productModalStock");
-    stockPill.textContent = STOCK_LABELS[product.stock];
-    stockPill.className = `stock-pill ${stockPillClass(product.stock)}`;
-    $("productModalQty").value = 1;
+    stockPill.textContent = stockLabel(product);
+    stockPill.className = `stock-pill ${stockPillClass(product)}`;
+    $("productModalImage").innerHTML = productImageHTML(product);
+    const qtyInput = $("productModalQty");
+    qtyInput.value = 1;
+    qtyInput.max = isProductInStock(product) ? Number(product.stock) : 0;
+    const stepper = $("productModalStepper");
+    stepper.querySelectorAll("button, input").forEach((el) => { el.disabled = !isProductInStock(product); });
     const orderBtn = $("productModalOrderBtn");
-    if (product.stock === "out") { orderBtn.textContent = "Out of Stock"; orderBtn.disabled = true; }
-    else { orderBtn.textContent = "Add to Cart"; orderBtn.disabled = false; }
+    orderBtn.disabled = !isProductInStock(product);
+    orderBtn.textContent = isProductInStock(product) ? "Add to Cart" : "Out of Stock";
     openModal(productModalOverlay);
   }
   $("productModalClose").addEventListener("click", () => closeModal(productModalOverlay));
@@ -374,19 +494,25 @@ const PRODUCTS = [
   });
   $("productModalPlus").addEventListener("click", () => {
     const input = $("productModalQty");
-    input.value = (parseInt(input.value, 10) || 1) + 1;
+    const max = currentProductInModal ? Number(currentProductInModal.stock) : 1;
+    input.value = Math.min(max, (parseInt(input.value, 10) || 1) + 1);
   });
   $("productModalQty").addEventListener("change", (e) => {
-    const val = parseInt(e.target.value, 10);
-    e.target.value = !val || val < 1 ? 1 : val;
+    const max = currentProductInModal ? Number(currentProductInModal.stock) : 1;
+    let val = parseInt(e.target.value, 10);
+    if (!val || val < 1) val = 1;
+    e.target.value = Math.min(val, max);
   });
   $("productModalOrderBtn").addEventListener("click", () => {
-    if (!currentProductInModal) return;
+    if (!currentProductInModal || !isProductInStock(currentProductInModal)) return;
     const qty = parseInt($("productModalQty").value, 10) || 1;
     addToCart(currentProductInModal, qty);
     closeModal(productModalOverlay);
   });
 
+  /* ---------------------------------------------------------
+     ORDER / CHECKOUT MODAL
+     --------------------------------------------------------- */
   const orderModalOverlay = $("orderModalOverlay");
   const orderFormState = $("orderFormState");
   const orderSuccessState = $("orderSuccessState");
@@ -420,7 +546,7 @@ const PRODUCTS = [
       <ul class="checkout-summary-list">
         ${cart.map((item) => `
           <li class="checkout-summary-item">
-            <span>${item.name} <span class="checkout-summary-qty">× ${item.quantity}</span></span>
+            <span>${escapeHTML(item.name)} <span class="checkout-summary-qty">× ${item.quantity}</span></span>
             <span>${formatPrice(item.price * item.quantity)}</span>
           </li>
         `).join("")}
@@ -547,6 +673,8 @@ const PRODUCTS = [
       await submitOrderToGoogleForm(orderData);
       showOrderSuccess();
       openWhatsAppConfirmation(orderData);
+      // A stock decrement (stock = stock - orderedQuantity) can hook in here
+      // later, keeping products.json as the single source of truth.
       clearCart();
     } catch (err) {
       console.error("Multan Mart: order submission failed.", err);
@@ -606,6 +734,9 @@ const PRODUCTS = [
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
+  /* ---------------------------------------------------------
+     FAB + NAV
+     --------------------------------------------------------- */
   const fabWrap = $("fabWrap");
   const fabMain = $("fabMain");
   const fabMenu = $("fabMenu");
@@ -631,14 +762,25 @@ const PRODUCTS = [
     });
   });
 
-  applyOwnerSettings();
-  renderCatalog();
-  loadCart();
-  renderCartUI();
-
-  if (!isGoogleFormConfigured()) {
-    console.info(
-      "Multan Mart: heads up — the Google Form isn't connected yet. Open script.js and fill in GOOGLE_FORM_ACTION_URL and FORM_FIELDS near the top so orders start reaching your Google Sheet."
-    );
-  }
+  /* ---------------------------------------------------------
+     INIT
+     --------------------------------------------------------- */
+  (async function init() {
+    applyOwnerSettings();
+    loadCart();
+    renderCartUI();
+    await loadProducts();
+    if (products.length === 0) {
+      productGrid.innerHTML = `<p class="empty-state">We couldn't load the product catalogue. Please check your connection and refresh.</p>`;
+      console.warn("Multan Mart: no products loaded from " + PRODUCTS_URL + ".");
+      return;
+    }
+    renderFilters();
+    renderCatalog();
+    if (!isGoogleFormConfigured()) {
+      console.info(
+        "Multan Mart: heads up — the Google Form isn't connected yet. Open script.js and fill in GOOGLE_FORM_ACTION_URL and FORM_FIELDS near the top so orders start reaching your Google Sheet."
+      );
+    }
+  })();
 })();

@@ -74,7 +74,16 @@
     <div class="section-heading">
       <p class="eyebrow">The Catalog</p>
       <h2>Available Products</h2>
-      <p class="section-lead">Tap any product to see details, or order straight from the card.</p>
+      <p class="section-lead">Search, tap + to add, and order straight from the card.</p>
+    </div>
+
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"/>
+      </svg>
+      <input type="search" id="catalogSearch" placeholder="Search by product, brand, or SKU…" autocomplete="off" aria-label="Search products">
+      <button type="button" class="search-clear" id="searchClear" hidden aria-label="Clear search">✕</button>
     </div>
 
     <div class="catalog-filters" role="tablist" aria-label="Filter products by category">
@@ -183,36 +192,6 @@
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </span>
   </button>
-</div>
-
-<!-- ================= PRODUCT DETAIL MODAL ================= -->
-<div class="modal-overlay" id="productModalOverlay">
-  <div class="modal product-modal" role="dialog" aria-modal="true" aria-labelledby="productModalName">
-    <button class="modal-close" id="productModalClose" aria-label="Close product details">✕</button>
-    <div class="product-modal-media">
-      <div class="product-image-placeholder" id="productModalImage" aria-hidden="true"></div>
-    </div>
-    <div class="product-modal-body">
-      <div class="product-modal-topline">
-        <span class="stock-pill" id="productModalStock">In Stock</span>
-        <span class="category-pill" id="productModalCategory">Produce</span>
-      </div>
-      <h3 id="productModalName">Product Name</h3>
-      <p class="product-modal-price" id="productModalPrice">Rs. 0</p>
-      <p class="product-modal-desc" id="productModalDesc">Description placeholder text about this product goes here.</p>
-
-      <div class="quantity-row">
-        <span class="quantity-label">Quantity</span>
-        <div class="quantity-stepper" id="productModalStepper">
-          <button type="button" class="stepper-btn" id="productModalMinus" aria-label="Decrease quantity">−</button>
-          <input type="number" id="productModalQty" class="stepper-input" value="1" min="1" inputmode="numeric" aria-label="Quantity">
-          <button type="button" class="stepper-btn" id="productModalPlus" aria-label="Increase quantity">+</button>
-        </div>
-      </div>
-
-      <button class="btn btn-primary btn-block" id="productModalOrderBtn">Add to Cart</button>
-    </div>
-  </div>
 </div>
 
 <!-- ================= ORDER MODAL ================= -->

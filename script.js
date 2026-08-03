@@ -28,8 +28,6 @@ const DELIVERY_FEE = 150;
 
 const PRODUCTS_URL = "products.json";
 const PLACEHOLDER_IMAGE = "images/placeholder.webp";
-const PRODUCT_DEFAULT_DESCRIPTION =
-  "A quality product available now at Multan Mart. Order through your cart and we'll confirm before delivery.";
 
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8Osj3Dm2Vqi-1ESWPm4cOwHViXwPl9a5qJ-027yZhtuAU_Q/formResponse";
 
@@ -171,7 +169,7 @@ const CATEGORY_LABELS = {
       cart.push({ id: product.id, name: product.name, price: product.price, quantity: addQty });
     }
     saveCart();
-    renderCartUI();
+    renderCartUI(product.id);
     showToast(`✓ ${product.name} added to cart`);
   }
 
@@ -186,14 +184,14 @@ const CATEGORY_LABELS = {
       if (maxQty > 0 && qty > maxQty) {
         item.quantity = maxQty;
         saveCart();
-        renderCartUI();
+        renderCartUI(id);
         showToast(`Only ${maxQty} in stock`);
         return;
       }
     }
     item.quantity = qty;
     saveCart();
-    renderCartUI();
+    renderCartUI(id);
     showToast("✓ Quantity updated");
   }
 
@@ -201,7 +199,7 @@ const CATEGORY_LABELS = {
     const item = findCartItem(id);
     cart = cart.filter((i) => String(i.id) !== String(id));
     saveCart();
-    renderCartUI();
+    renderCartUI(id);
     if (item) showToast(`✓ ${item.name} removed`);
   }
 
@@ -209,13 +207,22 @@ const CATEGORY_LABELS = {
     cart = [];
     saveCart();
     renderCartUI();
+    updateAllCardFooters();
   }
 
   /* ---------------------------------------------------------
      RENDERING — catalog
      --------------------------------------------------------- */
   const productGrid = $("productGrid");
+  const CATALOG_PREVIEW_COUNT = 6;
+
   let activeFilter = "all";
+  let searchQuery = "";
+  let searchDebounce = null;
+  const expandedCategories = new Set();
+
+  const searchInput = $("catalogSearch");
+  const searchClearBtn = $("searchClear");
 
   function stockLabel(product) {
     return isProductInStock(product) ? "Available" : "Out of Stock";
@@ -229,11 +236,38 @@ const CATEGORY_LABELS = {
     return `<img class="product-image" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}'">`;
   }
 
+  function getCartQuantity(id) {
+    const item = findCartItem(id);
+    return item ? item.quantity : 0;
+  }
+
+  function productCardFooterHTML(product) {
+    if (!isProductInStock(product)) {
+      return `<button type="button" class="add-to-cart-btn" disabled>Out of Stock</button>`;
+    }
+    const qty = getCartQuantity(product.id);
+    if (qty === 0) {
+      return `<button type="button" class="add-to-cart-btn" data-action="add-to-cart" data-id="${product.id}">+ Add</button>`;
+    }
+    const atMax = qty >= Number(product.stock);
+    return `
+      <div class="quantity-stepper card-qty-stepper">
+        <button type="button" class="stepper-btn" data-action="decrease" data-id="${product.id}" aria-label="Decrease quantity of ${escapeHTML(product.name)}">−</button>
+        <span class="card-qty-value" aria-live="polite">${qty}</span>
+        <button type="button" class="stepper-btn" data-action="increase" data-id="${product.id}" ${atMax ? "disabled" : ""} aria-label="Increase quantity of ${escapeHTML(product.name)}">+</button>
+      </div>
+    `;
+  }
+
+  function cardFooterWrapperHTML(product) {
+    return `<div class="product-card-footer">${productCardFooterHTML(product)}</div>`;
+  }
+
   function productCardHTML(product) {
     const outOfStock = !isProductInStock(product);
     return `
       <article class="product-card${outOfStock ? " is-out-of-stock" : ""}" data-id="${product.id}" data-category="${product.category}">
-        <div class="product-card-media" data-action="open-product" data-id="${product.id}">
+        <div class="product-card-media">
           <div class="product-image-placeholder">
             ${productImageHTML(product)}
           </div>
@@ -241,35 +275,64 @@ const CATEGORY_LABELS = {
         </div>
         <div class="product-card-body">
           <span class="category-pill">${CATEGORY_LABELS[product.category] || product.category}</span>
-          <span class="product-card-name" data-action="open-product" data-id="${product.id}" role="button" tabindex="0">${escapeHTML(product.name)}</span>
+          <span class="product-card-name">${escapeHTML(product.name)}</span>
           <div>
             <span class="product-card-price">${formatPrice(product.price)}</span>
           </div>
-          <div class="product-card-footer">
-            <button class="add-to-cart-btn" data-action="add-to-cart" data-id="${product.id}" ${outOfStock ? "disabled" : ""}>
-              ${outOfStock ? "Out of Stock" : "Add to Cart"}
-            </button>
-          </div>
-        </div>
-      </article>
+        ${cardFooterWrapperHTML(product)}
+      </div>
+    </article>
     `;
   }
 
+  function getVisibleProducts() {
+    let list = activeFilter === "all" ? products : products.filter((p) => p.category === activeFilter);
+    const q = searchQuery.toLowerCase();
+    if (!q) return list;
+    return list.filter((p) =>
+      p.name.toLowerCase().includes(q) ||
+      (p.brand && p.brand.toLowerCase().includes(q)) ||
+      (p.sku && String(p.sku).toLowerCase().includes(q))
+    );
+  }
+
   function categoryGroupHTML(category, productsInCategory) {
+    const isSearching = searchQuery.length > 0;
+    const isAllView = activeFilter === "all";
+    const isExpanded = expandedCategories.has(category);
+    const showPreview = isAllView && !isSearching && !isExpanded;
+    const shown = showPreview ? productsInCategory.slice(0, CATALOG_PREVIEW_COUNT) : productsInCategory;
+    const canToggle = isAllView && !isSearching && productsInCategory.length > CATALOG_PREVIEW_COUNT;
     return `
       <div class="category-group" data-category-group="${category}">
-        <h3 class="category-group-title">${CATEGORY_LABELS[category] || category}</h3>
+        <div class="category-group-header">
+          <h3 class="category-group-title">${CATEGORY_LABELS[category] || category}</h3>
+          ${canToggle ? `<button type="button" class="view-more-btn" data-action="toggle-category" data-category="${category}" aria-expanded="${isExpanded}">${isExpanded ? "Show Less" : "View More"}</button>` : ""}
+        </div>
         <div class="category-row">
-          ${productsInCategory.map(productCardHTML).join("")}
+          ${shown.map(productCardHTML).join("")}
         </div>
       </div>
     `;
   }
 
+  function emptyStateHTML() {
+    if (searchQuery.length > 0) {
+      return `
+        <div class="empty-state">
+          <p class="empty-state-title">No products found</p>
+          <p class="empty-state-sub">Try a different product name, brand, or SKU — or clear your search.</p>
+          <button type="button" class="btn btn-ghost" data-action="clear-search">Clear Search</button>
+        </div>
+      `;
+    }
+    return `<p class="empty-state">No products in this category right now — check back soon.</p>`;
+  }
+
   function renderCatalog() {
-    const filtered = activeFilter === "all" ? products : products.filter((p) => p.category === activeFilter);
-    if (filtered.length === 0) {
-      productGrid.innerHTML = `<p class="empty-state">No products in this category right now — check back soon.</p>`;
+    const visible = getVisibleProducts();
+    if (visible.length === 0) {
+      productGrid.innerHTML = emptyStateHTML();
       return;
     }
     const categoriesToShow = activeFilter === "all"
@@ -277,11 +340,41 @@ const CATEGORY_LABELS = {
       : [activeFilter];
     productGrid.innerHTML = categoriesToShow
       .map((category) => {
-        const productsInCategory = filtered.filter((p) => p.category === category);
+        const productsInCategory = visible.filter((p) => p.category === category);
         if (productsInCategory.length === 0) return "";
         return categoryGroupHTML(category, productsInCategory);
       })
       .join("");
+  }
+
+  function updateCategoryGroup(category) {
+    const productsInCategory = getVisibleProducts().filter((p) => p.category === category);
+    const group = productGrid.querySelector(`.category-group[data-category-group="${category}"]`);
+    if (group) group.outerHTML = categoryGroupHTML(category, productsInCategory);
+  }
+
+  function updateCardFooter(productId) {
+    const product = getProductById(productId);
+    if (!product) return;
+    productGrid.querySelectorAll(`.product-card[data-id="${productId}"]`).forEach((card) => {
+      const footer = card.querySelector(".product-card-footer");
+      if (footer) footer.outerHTML = cardFooterWrapperHTML(product);
+    });
+  }
+
+  function updateAllCardFooters() {
+    productGrid.querySelectorAll(".product-card").forEach((card) => {
+      const product = getProductById(card.dataset.id);
+      if (!product) return;
+      const footer = card.querySelector(".product-card-footer");
+      if (footer) footer.outerHTML = cardFooterWrapperHTML(product);
+    });
+  }
+
+  function toggleCategoryExpansion(category) {
+    if (expandedCategories.has(category)) { expandedCategories.delete(category); }
+    else { expandedCategories.add(category); }
+    updateCategoryGroup(category);
   }
 
   function renderFilters() {
@@ -306,6 +399,24 @@ const CATEGORY_LABELS = {
     renderCatalog();
   }
 
+  function onSearchInput() {
+    const value = searchInput.value;
+    searchClearBtn.hidden = value.length === 0;
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {
+      searchQuery = value.trim();
+      renderCatalog();
+    }, 120);
+  }
+
+  function clearSearch() {
+    searchInput.value = "";
+    searchClearBtn.hidden = true;
+    searchQuery = "";
+    clearTimeout(searchDebounce);
+    renderCatalog();
+  }
+
   document.querySelector(".catalog-filters").addEventListener("click", (e) => {
     const chip = e.target.closest(".filter-chip");
     if (!chip) return;
@@ -315,21 +426,22 @@ const CATEGORY_LABELS = {
   productGrid.addEventListener("click", (e) => {
     const target = e.target.closest("[data-action]");
     if (!target) return;
-    const productId = target.dataset.id;
-    if (target.dataset.action === "open-product") { openProductModal(productId); }
-    else if (target.dataset.action === "add-to-cart") {
-      const product = getProductById(productId);
+    const action = target.dataset.action;
+    if (action === "add-to-cart" || action === "increase") {
+      const product = getProductById(target.dataset.id);
       if (product) addToCart(product, 1);
+    } else if (action === "decrease") {
+      updateCartQuantity(target.dataset.id, getCartQuantity(target.dataset.id) - 1);
+    } else if (action === "toggle-category") {
+      toggleCategoryExpansion(target.dataset.category);
+    } else if (action === "clear-search") {
+      clearSearch();
     }
   });
 
-  productGrid.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter" && e.key !== " ") return;
-    const target = e.target.closest("[data-action='open-product']");
-    if (!target) return;
-    e.preventDefault();
-    openProductModal(target.dataset.id);
-  });
+  searchInput.addEventListener("input", onSearchInput);
+  searchInput.addEventListener("search", onSearchInput);
+  searchClearBtn.addEventListener("click", clearSearch);
 
   /* ---------------------------------------------------------
      RENDERING — cart
@@ -398,10 +510,13 @@ const CATEGORY_LABELS = {
     $("cartTotal").textContent = formatPrice(total);
   }
 
-  function renderCartUI() {
+  function renderCartUI(updatedProductId) {
     renderCartBadge();
     renderStickyCartBtn();
     renderCartDrawer();
+    if (updatedProductId != null) {
+      updateCardFooter(updatedProductId);
+    }
   }
 
   /* ---------------------------------------------------------
@@ -458,56 +573,6 @@ const CATEGORY_LABELS = {
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     document.querySelectorAll(".modal-overlay.is-visible").forEach(closeModal);
-  });
-
-  /* ---------------------------------------------------------
-     PRODUCT DETAIL MODAL
-     --------------------------------------------------------- */
-  const productModalOverlay = $("productModalOverlay");
-  let currentProductInModal = null;
-  function openProductModal(productId) {
-    const product = getProductById(productId);
-    if (!product) return;
-    currentProductInModal = product;
-    $("productModalName").textContent = product.name;
-    $("productModalPrice").textContent = formatPrice(product.price);
-    $("productModalDesc").textContent = PRODUCT_DEFAULT_DESCRIPTION;
-    $("productModalCategory").textContent = CATEGORY_LABELS[product.category] || product.category;
-    const stockPill = $("productModalStock");
-    stockPill.textContent = stockLabel(product);
-    stockPill.className = `stock-pill ${stockPillClass(product)}`;
-    $("productModalImage").innerHTML = productImageHTML(product);
-    const qtyInput = $("productModalQty");
-    qtyInput.value = 1;
-    qtyInput.max = isProductInStock(product) ? Number(product.stock) : 0;
-    const stepper = $("productModalStepper");
-    stepper.querySelectorAll("button, input").forEach((el) => { el.disabled = !isProductInStock(product); });
-    const orderBtn = $("productModalOrderBtn");
-    orderBtn.disabled = !isProductInStock(product);
-    orderBtn.textContent = isProductInStock(product) ? "Add to Cart" : "Out of Stock";
-    openModal(productModalOverlay);
-  }
-  $("productModalClose").addEventListener("click", () => closeModal(productModalOverlay));
-  $("productModalMinus").addEventListener("click", () => {
-    const input = $("productModalQty");
-    input.value = Math.max(1, (parseInt(input.value, 10) || 1) - 1);
-  });
-  $("productModalPlus").addEventListener("click", () => {
-    const input = $("productModalQty");
-    const max = currentProductInModal ? Number(currentProductInModal.stock) : 1;
-    input.value = Math.min(max, (parseInt(input.value, 10) || 1) + 1);
-  });
-  $("productModalQty").addEventListener("change", (e) => {
-    const max = currentProductInModal ? Number(currentProductInModal.stock) : 1;
-    let val = parseInt(e.target.value, 10);
-    if (!val || val < 1) val = 1;
-    e.target.value = Math.min(val, max);
-  });
-  $("productModalOrderBtn").addEventListener("click", () => {
-    if (!currentProductInModal || !isProductInStock(currentProductInModal)) return;
-    const qty = parseInt($("productModalQty").value, 10) || 1;
-    addToCart(currentProductInModal, qty);
-    closeModal(productModalOverlay);
   });
 
   /* ---------------------------------------------------------

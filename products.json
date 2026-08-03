@@ -1357,7 +1357,7 @@
     "sku": "6001106114619",
     "price": 200,
     "stock": 6,
-    "image": "images/harpic-225-ml.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 137,
@@ -1367,7 +1367,7 @@
     "sku": "8961101231552",
     "price": 130,
     "stock": 0,
-    "image": "images/harpic-125ml.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 138,
@@ -1377,7 +1377,7 @@
     "sku": "8964002686148",
     "price": 800,
     "stock": 0,
-    "image": "images/harpic-750ml.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 139,
@@ -1387,7 +1387,7 @@
     "sku": "8964002686179",
     "price": 1050,
     "stock": 0,
-    "image": "images/harpic-1l.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 140,
@@ -1397,7 +1397,7 @@
     "sku": "8964002686858",
     "price": 475,
     "stock": 2,
-    "image": "images/harpic-450ml.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 141,
@@ -1407,7 +1407,7 @@
     "sku": "8964002686919",
     "price": 200,
     "stock": 2,
-    "image": "images/harpic-225ml.webp"
+    "image": "images/harpic.webp"
   },
   {
     "id": 142,

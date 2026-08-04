@@ -27,7 +27,6 @@ const CART_STORAGE_KEY = "multanMartCart";
 const DELIVERY_FEE = 150;
 
 const PRODUCTS_URL = "products.json";
-const PLACEHOLDER_IMAGE = "images/placeholder.webp";
 
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8Osj3Dm2Vqi-1ESWPm4cOwHViXwPl9a5qJ-027yZhtuAU_Q/formResponse";
 
@@ -65,6 +64,31 @@ const CATEGORY_LABELS = {
   snacks: "Snacks",
   spices: "Spices",
   stationery: "Stationery",
+};
+
+const CATEGORY_ICONS = {
+  cleaning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="M3 9l2.5-5h13L21 9"/><path d="M12 13v4"/><path d="M9 15h6"/></svg>',
+  beverages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 7H9L8 2Z"/><path d="M9 9h6l-.5 4H9.5L9 9Z"/><path d="M10 13h4l-.5 3h-3L10 13Z"/><path d="M11 16h2l-.25 2h-1.5L11 16Z"/><path d="M8 21h8"/><path d="M7 21c0-1 1-2 5-2s5 1 5 2"/></svg>',
+  confectionery: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 2 7 4 7 7c0 2 1 3 2 4l-1 11h8l-1-11c1-1 2-2 2-4 0-3-2-5-5-5Z"/><path d="M9 7c0-2 1.5-3 3-3s3 1 3 3"/></svg>',
+  cooking: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M8 6h8a2 2 0 0 1 2 2v1H6V8a2 2 0 0 1 2-2Z"/><path d="M6 9v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9"/><path d="M4 21h16"/></svg>',
+  "cooking-oil": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8v4a4 4 0 0 1-8 0V3Z"/><path d="M10 7v1a3 3 0 0 0 6 0V7"/><path d="M12 14v4"/><path d="M9 18h6"/><circle cx="12" cy="11" r="1" fill="currentColor" stroke="none"/></svg>',
+  diapers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M4 10h16"/><circle cx="9" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1" fill="currentColor" stroke="none"/></svg>',
+  "baby-care": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8 13c-3 1-4 3-4 5h16c0-2-1-4-4-5"/><path d="M10 8h4"/></svg>',
+  foods: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 12c0-5 4-9 9-9s9 4 9 9"/><path d="M3 12c0 5 4 9 9 9s9-4 9-9"/></svg>',
+  grocery: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+  "hair-care": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-3 4-6 5-6 9a6 6 0 0 0 12 0c0-4-3-5-6-9Z"/><path d="M12 14v4"/><path d="M10 18h4"/></svg>',
+  "home-care": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  laundry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="2"/><circle cx="7" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="6" r="1" fill="currentColor" stroke="none"/></svg>',
+  "milk-dairy": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 6H7l1-6Z"/><rect x="7" y="8" width="10" height="13" rx="1"/><path d="M7 12h10"/></svg>',
+  "oral-care": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 6 6 6 9c0 2 1 4 2 5l-1 7h10l-1-7c1-1 2-3 2-5 0-3-2-6-6-6Z"/><path d="M10 9v2"/><path d="M14 9v2"/></svg>',
+  others: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
+  "household-paper": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4V4Z"/><path d="M8 8h8"/><path d="M8 12h6"/><path d="M8 16h4"/></svg>',
+  razors: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M8 4v4"/><path d="M16 4v4"/><path d="M6 8h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2Z"/></svg>',
+  "skin-care": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4 0-7 3-7 7 0 3 2 5 4 6v4h6v-4c2-1 4-3 4-6 0-4-3-7-7-7Z"/><path d="M9 21h6"/></svg>',
+  "skin-cleansing": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="3"/><path d="M8 6V4"/><path d="M16 6V4"/><path d="M8 12h8"/></svg>',
+  snacks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/><circle cx="9" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="14" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="11" cy="17" r="1" fill="currentColor" stroke="none"/></svg>',
+  spices: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l1 5H8l1-5Z"/><path d="M8 7h8l-.5 3H8.5L8 7Z"/><path d="M10 10h4l-.5 3h-3L10 10Z"/><path d="M10 13h4l-1 9h-2l-1-9Z"/></svg>',
+  stationery: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-12 12H5v-4L17 3Z"/><path d="M14 6l4 4"/><path d="M5 21h14"/></svg>',
 };
 
 (function () {
@@ -240,8 +264,9 @@ const CATEGORY_LABELS = {
     return isProductInStock(product) ? "" : "is-out";
   }
 
-  function productImageHTML(product) {
-    return `<img class="product-image" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}'">`;
+  function categoryIconHTML(category) {
+    const icon = CATEGORY_ICONS[category] || CATEGORY_ICONS.others;
+    return `<span class="card-category-icon" aria-hidden="true">${icon}</span>`;
   }
 
   function getCartQuantity(id) {
@@ -273,31 +298,34 @@ const CATEGORY_LABELS = {
 
   function productCardHTML(product) {
     const outOfStock = !isProductInStock(product);
+    const brand = product.brand ? `<span class="product-card-brand">${escapeHTML(product.brand)}</span>` : "";
     return `
       <article class="product-card${outOfStock ? " is-out-of-stock" : ""}" data-id="${product.id}" data-category="${product.category}">
-        <div class="product-card-media">
-          <div class="product-image-placeholder">
-            ${productImageHTML(product)}
-          </div>
-          <span class="stock-pill ${stockPillClass(product)}">${stockLabel(product)}</span>
-        </div>
         <div class="product-card-body">
-          <span class="category-pill">${CATEGORY_LABELS[product.category] || product.category}</span>
-          <span class="product-card-name">${escapeHTML(product.name)}</span>
-          <div>
-            <span class="product-card-price">${formatPrice(product.price)}</span>
+          <div class="product-card-top">
+            ${categoryIconHTML(product.category)}
+            <span class="stock-pill ${stockPillClass(product)}">${stockLabel(product)}</span>
           </div>
-        ${cardFooterWrapperHTML(product)}
-      </div>
-    </article>
+          <div class="product-card-info">
+            <span class="product-card-name">${escapeHTML(product.name)}</span>
+            ${brand}
+          </div>
+          <div class="product-card-bottom">
+            <div class="product-card-price-wrap">
+              <span class="product-card-price">${formatPrice(product.price)}</span>
+            </div>
+          ${cardFooterWrapperHTML(product)}
+          </div>
+        </div>
+      </article>
     `;
   }
 
   function getVisibleProducts() {
-    const list = products.filter((p) => p.category === activeFilter);
     const q = searchQuery.toLowerCase();
-    if (!q) return list;
-    return list.filter((p) =>
+    const base = q ? products : products.filter((p) => p.category === activeFilter);
+    if (!q) return base;
+    return base.filter((p) =>
       p.name.toLowerCase().includes(q) ||
       (p.brand && p.brand.toLowerCase().includes(q)) ||
       (p.sku && String(p.sku).toLowerCase().includes(q))
@@ -341,6 +369,17 @@ const CATEGORY_LABELS = {
     const visible = getVisibleProducts();
     if (visible.length === 0) {
       productGrid.innerHTML = emptyStateHTML();
+      return;
+    }
+    if (searchQuery.length > 0) {
+      const categories = getCategoriesInOrder().filter((category) =>
+        visible.some((p) => p.category === category)
+      );
+      productGrid.innerHTML = categories
+        .map((category) =>
+          categoryGroupHTML(category, visible.filter((p) => p.category === category))
+        )
+        .join("");
       return;
     }
     productGrid.innerHTML = categoryGroupHTML(activeFilter, visible);

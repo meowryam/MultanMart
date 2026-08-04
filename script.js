@@ -836,7 +836,7 @@ const CATEGORY_LABELS = {
       console.warn("Multan Mart: no products loaded from " + PRODUCTS_URL + ".");
       return;
     }
-    activeFilter = getAlphabeticalFirstCategory() || "";
+    activeFilter = getCategoriesInOrder().includes("grocery") ? "grocery" : getAlphabeticalFirstCategory() || "";
     renderFilters();
     renderCatalog();
     if (!isGoogleFormConfigured()) {

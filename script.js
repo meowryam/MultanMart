@@ -100,6 +100,14 @@ const CATEGORY_LABELS = {
     );
   }
 
+  function getAlphabeticalFirstCategory() {
+    const available = getCategoriesInOrder();
+    if (available.length === 0) return "";
+    return available.slice().sort((a, b) =>
+      (CATEGORY_LABELS[a] || a).toLowerCase().localeCompare((CATEGORY_LABELS[b] || b).toLowerCase())
+    )[0];
+  }
+
   async function loadProducts() {
     try {
       const response = await fetch(PRODUCTS_URL, { cache: "no-cache" });
@@ -216,7 +224,7 @@ const CATEGORY_LABELS = {
   const productGrid = $("productGrid");
   const CATALOG_PREVIEW_COUNT = 6;
 
-  let activeFilter = "all";
+  let activeFilter = "";
   let searchQuery = "";
   let searchDebounce = null;
   const expandedCategories = new Set();
@@ -286,7 +294,7 @@ const CATEGORY_LABELS = {
   }
 
   function getVisibleProducts() {
-    let list = activeFilter === "all" ? products : products.filter((p) => p.category === activeFilter);
+    const list = products.filter((p) => p.category === activeFilter);
     const q = searchQuery.toLowerCase();
     if (!q) return list;
     return list.filter((p) =>
@@ -335,16 +343,7 @@ const CATEGORY_LABELS = {
       productGrid.innerHTML = emptyStateHTML();
       return;
     }
-    const categoriesToShow = activeFilter === "all"
-      ? getCategoriesInOrder()
-      : [activeFilter];
-    productGrid.innerHTML = categoriesToShow
-      .map((category) => {
-        const productsInCategory = visible.filter((p) => p.category === category);
-        if (productsInCategory.length === 0) return "";
-        return categoryGroupHTML(category, productsInCategory);
-      })
-      .join("");
+    productGrid.innerHTML = categoryGroupHTML(activeFilter, visible);
   }
 
   function updateCategoryGroup(category) {
@@ -380,12 +379,9 @@ const CATEGORY_LABELS = {
   function renderFilters() {
     const filterBar = document.querySelector(".catalog-filters");
     if (!filterBar) return;
-    const chips = [`<button class="filter-chip is-active" data-filter="all" role="tab" aria-selected="true">All</button>`];
-    getCategoriesInOrder().forEach((slug) => {
-      chips.push(
-        `<button class="filter-chip" data-filter="${slug}" role="tab" aria-selected="false">${CATEGORY_LABELS[slug]}</button>`
-      );
-    });
+    const chips = getCategoriesInOrder().map((slug) =>
+      `<button class="filter-chip${slug === activeFilter ? " is-active" : ""}" data-filter="${slug}" role="tab" aria-selected="${slug === activeFilter}">${CATEGORY_LABELS[slug]}</button>`
+    );
     filterBar.innerHTML = chips.join("");
   }
 
@@ -840,6 +836,7 @@ const CATEGORY_LABELS = {
       console.warn("Multan Mart: no products loaded from " + PRODUCTS_URL + ".");
       return;
     }
+    activeFilter = getAlphabeticalFirstCategory() || "";
     renderFilters();
     renderCatalog();
     if (!isGoogleFormConfigured()) {

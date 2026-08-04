@@ -86,7 +86,8 @@ button{font-family:var(--font-body);cursor:pointer}
 /* SEARCH BAR */
 .search-bar{position:relative;max-width:560px;margin-bottom:28px}
 .search-bar .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--ink-soft);pointer-events:none}
-.search-bar input[type="search"]{width:100%;border:2px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-family:var(--font-body);font-size:1rem;padding:14px 46px;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;min-height:52px}
+.search-bar input[type="search"]{width:100%;min-width:0;border:2px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-family:var(--font-body);font-size:1rem;line-height:1.4;padding:14px 46px;transition:border-color .15s,box-shadow .15s,padding .15s ease;-webkit-appearance:none;appearance:none;min-height:52px;text-overflow:ellipsis}
+.search-bar:has(.search-clear[hidden]) input[type="search"]{padding-right:20px}
 .search-bar input[type="search"]:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(45,125,125,.15)}
 .search-bar input[type="search"]::-webkit-search-cancel-button,.search-bar input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;appearance:none}
 .search-bar input[type="search"]::-ms-clear{display:none}
@@ -329,6 +330,11 @@ textarea{resize:vertical;min-height:64px}
   .product-card-body{padding:20px 20px 22px;gap:12px}
   .catalog-filters{gap:10px;margin-bottom:26px}
   .filter-chip{padding:11px 18px;font-size:.92rem}
+
+  .search-bar{margin-bottom:22px}
+  .search-bar .search-icon{left:15px}
+  .search-bar input[type="search"]{font-size:16px;padding-top:13px;padding-bottom:13px}
+  .search-clear{width:34px;height:34px;right:6px}
 
   .category-group-header{padding:0 20px;margin-bottom:10px}
   .category-group-title{margin-bottom:0;font-size:1.02rem}

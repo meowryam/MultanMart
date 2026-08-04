@@ -7,7 +7,7 @@
     "sku": "0032",
     "price": 160,
     "stock": 1,
-    "image": "images/kachi-basmati-500gm.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 2,
@@ -17,7 +17,7 @@
     "sku": "1201",
     "price": 380,
     "stock": 1,
-    "image": "images/kainat-orignal-1kg.webp"
+   "image": "images/rice.webp"
   },
   {
     "id": 3,
@@ -27,7 +27,7 @@
     "sku": "17",
     "price": 200,
     "stock": 1,
-    "image": "images/kainat-rice-500g.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 4,
@@ -37,7 +37,7 @@
     "sku": "6",
     "price": 340,
     "stock": 1,
-    "image": "images/dbl-steam-narowal-1kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 5,
@@ -47,7 +47,7 @@
     "sku": "574",
     "price": 170,
     "stock": 1,
-    "image": "images/dbl-steam-narowal-500g.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 6,
@@ -57,7 +57,7 @@
     "sku": "05",
     "price": 140,
     "stock": 1,
-    "image": "images/dbl-stm-pona-rice-500g.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 7,
@@ -67,7 +67,7 @@
     "sku": "08",
     "price": 240,
     "stock": 1,
-    "image": "images/salam-masoor-1kg.webp"
+    "image": "images/salam-masoor.webp"
   },
   {
     "id": 8,
@@ -87,7 +87,7 @@
     "sku": "DC1",
     "price": 400,
     "stock": 1,
-    "image": "images/daal-moong-1kg.webp"
+    "image": "images/daal-moong.webp"
   },
   {
     "id": 10,
@@ -117,7 +117,7 @@
     "sku": "DC3",
     "price": 210,
     "stock": 1,
-    "image": "images/daal-channa-1kg.webp"
+    "image": "images/daal-channa.webp"
   },
   {
     "id": 13,
@@ -127,7 +127,7 @@
     "sku": "DC4",
     "price": 240,
     "stock": 1,
-    "image": "images/baison-1kg.webp"
+    "image": "images/baison.webp"
   },
   {
     "id": 14,
@@ -137,7 +137,7 @@
     "sku": "DC5",
     "price": 470,
     "stock": 1,
-    "image": "images/daal-mash-1kg.webp"
+    "image": "images/daal-maash.webp"
   },
   {
     "id": 15,
@@ -147,7 +147,7 @@
     "sku": "DC6",
     "price": 300,
     "stock": 1,
-    "image": "images/basmati-super-rice-1kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 16,
@@ -157,7 +157,7 @@
     "sku": "DC7",
     "price": 150,
     "stock": 1,
-    "image": "images/sugar-1kg.webp"
+    "image": "images/sugar.webp"
   },
   {
     "id": 17,
@@ -177,7 +177,7 @@
     "sku": "21",
     "price": 680,
     "stock": 1,
-    "image": "images/dbl-steam-narowal-2kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 19,
@@ -297,7 +297,7 @@
     "sku": "1",
     "price": 120,
     "stock": 2,
-    "image": "images/daal-mash-250gm.webp"
+    "image": "images/daal-maash.webp"
   },
   {
     "id": 31,
@@ -307,7 +307,7 @@
     "sku": "15",
     "price": 95,
     "stock": 2,
-    "image": "images/baison-250gm.webp"
+    "image": "images/baison.webp"
   },
   {
     "id": 32,
@@ -317,7 +317,7 @@
     "sku": "3",
     "price": 70,
     "stock": 2,
-    "image": "images/daal-channa-moti-250gm.webp"
+    "image": "images/daal-channa.webp"
   },
   {
     "id": 33,
@@ -327,7 +327,7 @@
     "sku": "8",
     "price": 60,
     "stock": 2,
-    "image": "images/salam-masoor-250gm.webp"
+    "image": "images/salam-masoor.webp"
   },
   {
     "id": 34,
@@ -387,7 +387,7 @@
     "sku": "5",
     "price": 280,
     "stock": 3,
-    "image": "images/kaale-chanay.webp"
+    "image": "images/daal-channa.webp"
   },
   {
     "id": 40,
@@ -517,7 +517,7 @@
     "sku": "03",
     "price": 800,
     "stock": 4,
-    "image": "images/kainat-purani-2kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 53,
@@ -527,7 +527,7 @@
     "sku": "04",
     "price": 300,
     "stock": 4,
-    "image": "images/dbl-stm-pona-rice-1k.webp"
+   "image": "images/rice.webp"
   },
   {
     "id": 54,
@@ -557,7 +557,7 @@
     "sku": "25",
     "price": 60,
     "stock": 4,
-    "image": "images/kishmish-1.webp"
+    "image": "images/kishmish.webp"
   },
   {
     "id": 57,
@@ -577,7 +577,7 @@
     "sku": "034",
     "price": 70,
     "stock": 5,
-    "image": "images/daar-chini.webp"
+    "image": "images/daar-cheeni.webp"
   },
   {
     "id": 59,
@@ -597,7 +597,7 @@
     "sku": "4",
     "price": 140,
     "stock": 5,
-    "image": "images/daal-channa-moti-500gm.webp"
+    "image": "images/daal-channa.webp"
   },
   {
     "id": 61,
@@ -617,7 +617,7 @@
     "sku": "046",
     "price": 120,
     "stock": 5,
-    "image": "images/basmati-tota-rice-500g.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 63,
@@ -627,7 +627,7 @@
     "sku": "22",
     "price": 180,
     "stock": 5,
-    "image": "images/sela-kainaat-500gm.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 64,
@@ -667,7 +667,7 @@
     "sku": "16",
     "price": 190,
     "stock": 6,
-    "image": "images/baison-500gm.webp"
+    "image": "images/baison.webp"
   },
   {
     "id": 68,
@@ -677,7 +677,7 @@
     "sku": "2",
     "price": 100,
     "stock": 6,
-    "image": "images/daal-moong250-gm.webp"
+    "image": "images/daal-moong.webp"
   },
   {
     "id": 69,
@@ -697,7 +697,7 @@
     "sku": "18",
     "price": 190,
     "stock": 6,
-    "image": "images/kainat-purani-500gm.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 71,
@@ -737,7 +737,7 @@
     "sku": "0002",
     "price": 200,
     "stock": 7,
-    "image": "images/zeera-white-100gm.webp"
+    "image": "images/zeera-white.webp"
   },
   {
     "id": 75,
@@ -747,7 +747,7 @@
     "sku": "0020",
     "price": 50,
     "stock": 7,
-    "image": "images/badyan-20gm.webp"
+    "image": "images/badyan.webp"
   },
   {
     "id": 76,
@@ -767,7 +767,7 @@
     "sku": "28",
     "price": 50,
     "stock": 7,
-    "image": "images/dhanya-salum.webp"
+    "image": "images/dhanya-salam.webp"
   },
   {
     "id": 78,
@@ -777,7 +777,7 @@
     "sku": "23",
     "price": 360,
     "stock": 8,
-    "image": "images/sela-kainaat-1kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 79,
@@ -797,7 +797,7 @@
     "sku": "32",
     "price": 100,
     "stock": 8,
-    "image": "images/alaichi-choti.webp"
+    "image": "images/ilaichi.webp"
   },
   {
     "id": 81,
@@ -837,7 +837,7 @@
     "sku": "585",
     "price": 380,
     "stock": 9,
-    "image": "images/baison-1kg-1.webp"
+    "image": "images/baison.webp"
   },
   {
     "id": 85,
@@ -847,7 +847,7 @@
     "sku": "19",
     "price": 240,
     "stock": 10,
-    "image": "images/basmati-tota-rice-1kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 86,
@@ -887,7 +887,7 @@
     "sku": "38",
     "price": 140,
     "stock": 10,
-    "image": "images/zeera-white-50g.webp"
+    "image": "images/zeera-white.webp"
   },
   {
     "id": 90,
@@ -907,7 +907,7 @@
     "sku": "013",
     "price": 125,
     "stock": 10,
-    "image": "images/brown-sugar-500g.webp"
+    "image": "images/brown-sugar.webp"
   },
   {
     "id": 92,
@@ -917,7 +917,7 @@
     "sku": "47",
     "price": 100,
     "stock": 10,
-    "image": "images/sugar-500gm.webp"
+    "image": "images/sugar.webp"
   },
   {
     "id": 93,
@@ -1117,7 +1117,7 @@
     "sku": "33",
     "price": 50,
     "stock": 20,
-    "image": "images/imli-1.webp"
+    "image": "images/imli.webp"
   },
   {
     "id": 113,
@@ -1147,7 +1147,7 @@
     "sku": "42",
     "price": 50,
     "stock": 20,
-    "image": "images/haldi-1.webp"
+    "image": "images/haldi.webp"
   },
   {
     "id": 116,
@@ -1167,7 +1167,7 @@
     "sku": "49",
     "price": 320,
     "stock": 20,
-    "image": "images/sugar-2kg.webp"
+    "image": "images/sugar.webp"
   },
   {
     "id": 118,
@@ -1187,7 +1187,7 @@
     "sku": "6926292553045",
     "price": 160,
     "stock": 20,
-    "image": "images/nail-cutter.webp"
+    "image": "images/nailcutter.webp"
   },
   {
     "id": 120,
@@ -1197,7 +1197,7 @@
     "sku": "060",
     "price": 480,
     "stock": 22,
-    "image": "images/daal-mash-1kg-1.webp"
+    "image": "images/daal-maash.webp"
   },
   {
     "id": 121,
@@ -1227,7 +1227,7 @@
     "sku": "0023",
     "price": 40,
     "stock": 24,
-    "image": "images/rai-20gm.webp"
+    "image": "images/rai.webp"
   },
   {
     "id": 124,
@@ -1267,7 +1267,7 @@
     "sku": "02",
     "price": 400,
     "stock": 28,
-    "image": "images/kainat-purani-1kg.webp"
+   "image": "images/rice.webp"
   },
   {
     "id": 128,
@@ -1277,7 +1277,7 @@
     "sku": "028",
     "price": 100,
     "stock": 30,
-    "image": "images/dhania-salum.webp"
+    "image": "images/dhanya-salam.webp"
   },
   {
     "id": 129,
@@ -1287,7 +1287,7 @@
     "sku": "46",
     "price": 160,
     "stock": 30,
-    "image": "images/kachi-tota-1kg.webp"
+   "image": "images/rice.webp"
   },
   {
     "id": 130,
@@ -1297,7 +1297,7 @@
     "sku": "0019",
     "price": 50,
     "stock": 40,
-    "image": "images/jaifal-20gm.webp"
+    "image": "images/jaifal.webp"
   },
   {
     "id": 131,
@@ -1307,7 +1307,7 @@
     "sku": "20",
     "price": 280,
     "stock": 46,
-    "image": "images/kainat-pona-rice-1kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 132,
@@ -1317,7 +1317,7 @@
     "sku": "0018",
     "price": 60,
     "stock": 48,
-    "image": "images/jalwatri-10gm.webp"
+    "image": "images/jalwatri.webp"
   },
   {
     "id": 133,
@@ -1447,7 +1447,7 @@
     "sku": "689076783170",
     "price": 550,
     "stock": 0,
-    "image": "images/kingtox-400ml.webp"
+    "image": "images/kingtox.webp"
   },
   {
     "id": 146,
@@ -1457,7 +1457,7 @@
     "sku": "689076783378",
     "price": 440,
     "stock": 1,
-    "image": "images/kingtox-300ml.webp"
+    "image": "images/kingtox.webp"
   },
   {
     "id": 147,
@@ -1517,7 +1517,7 @@
     "sku": "8962222014031",
     "price": 100,
     "stock": 6,
-    "image": "images/tiger-coil-1.webp"
+    "image": "images/tiger-coil.webp"
   },
   {
     "id": 153,
@@ -1627,7 +1627,7 @@
     "sku": "58",
     "price": 320,
     "stock": 1,
-    "image": "images/kachi-basmati-1kg.webp"
+   "image": "images/rice.webp"
   },
   {
     "id": 164,
@@ -1687,7 +1687,7 @@
     "sku": "60",
     "price": 240,
     "stock": 5,
-    "image": "images/daal-mash-500gm.webp"
+    "image": "images/daal-maash.webp"
   },
   {
     "id": 170,
@@ -1767,7 +1767,7 @@
     "sku": "61",
     "price": 200,
     "stock": 11,
-    "image": "images/daal-moong-500gm.webp"
+    "image": "images/daal-moong.webp"
   },
   {
     "id": 178,
@@ -2447,7 +2447,7 @@
     "sku": "8964000598115",
     "price": 95,
     "stock": 0,
-    "image": "images/daal-chana.webp"
+    "image": "images/daal-channa.webp"
   },
   {
     "id": 246,
@@ -2947,7 +2947,7 @@
     "sku": "1111",
     "price": 740,
     "stock": 1,
-    "image": "images/kainat-original-2kg.webp"
+    "image": "images/rice.webp"
   },
   {
     "id": 296,
@@ -3387,7 +3387,7 @@
     "sku": "62",
     "price": 120,
     "stock": 9,
-    "image": "images/salam-masoor-500gm.webp"
+    "image": "images/salam-masoor.webp"
   },
   {
     "id": 340,
@@ -5717,7 +5717,7 @@
     "sku": "64",
     "price": 400,
     "stock": 2,
-    "image": "images/daal-moong-1kg-1.webp"
+    "image": "images/daal-moong.webp"
   },
   {
     "id": 573,
@@ -6997,7 +6997,7 @@
     "sku": "48",
     "price": 160,
     "stock": 170,
-    "image": "images/sugar-1kg-1.webp"
+    "image": "images/sugar.webp"
   },
   {
     "id": 701,
@@ -7647,17 +7647,17 @@
     "sku": "7622202399633",
     "price": 100,
     "stock": 9,
-    "image": "images/tang-orange-jug-pack.webp"
+    "image": "images/tang-orange-jug.webp"
   },
   {
     "id": 766,
-    "name": "TANG ORANG SACHET",
+    "name": "TANG ORANGE SACHET",
     "category": "beverages",
     "brand": "TANG",
     "sku": "7622201718664",
     "price": 25,
     "stock": 12,
-    "image": "images/tang-orang-sachet.webp"
+    "image": "images/tang-orange-sachet.webp"
   },
   {
     "id": 767,

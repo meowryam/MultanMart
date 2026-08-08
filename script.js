@@ -20,11 +20,11 @@ const OWNER_SETTINGS = {
   whatsAppNumber: "923008770122",
   whatsAppNumberDisplay: "0300 8770122",
   businessAddress: "Multan, Pakistan",
-  businessHours: "Mon – Sat, 9:00 AM – 9:00 PM",
+  businessHours: "Mon – Sun, 24/7 available",
 };
 
 const CART_STORAGE_KEY = "multanMartCart";
-const DELIVERY_FEE = 150;
+const DELIVERY_FEE = 100;
 
 const PRODUCTS_URL = "products.json";
 

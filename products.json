@@ -242,7 +242,7 @@
   {
     "id": 25,
     "name": "F&JOY HF SHAMPOO",
-    "category": "skin-care",
+    "category": "hair-care",
     "brand": "CARE LOTION",
     "sku": "6009679065222",
     "price": 700,
@@ -252,7 +252,7 @@
   {
     "id": 26,
     "name": "F&JOY BS SHAMPOO",
-    "category": "skin-care",
+    "category": "hair-care",
     "brand": "CARE LOTION",
     "sku": "6009679065239",
     "price": 700,
@@ -272,7 +272,7 @@
   {
     "id": 28,
     "name": "HAND WASH AURA",
-    "category": "skin-care",
+    "category": "skin-cleansing",
     "brand": "HAND WASH",
     "sku": "8961102860096",
     "price": 250,
@@ -282,7 +282,7 @@
   {
     "id": 29,
     "name": "SHIELD NIPPLE 60/UNIT",
-    "category": "skin-care",
+    "category": "baby-care",
     "brand": "NIPPLE",
     "sku": "8964001492351",
     "price": 50,
@@ -362,7 +362,7 @@
   {
     "id": 37,
     "name": "COKE PET",
-    "category": "grocery",
+    "category": "beverages",
     "brand": "COKE",
     "sku": "5449000051981",
     "price": 1000,
@@ -372,7 +372,7 @@
   {
     "id": 38,
     "name": "SHOE BRUSH",
-    "category": "grocery",
+    "category": "home-care",
     "brand": "CORPORATE",
     "sku": "0028",
     "price": 180,
@@ -382,7 +382,7 @@
   {
     "id": 39,
     "name": "TOSHIBA CLOCK CELL",
-    "category": "grocery",
+    "category": "others",
     "brand": "CORPORATE",
     "sku": "4904530591419",
     "price": 40,
@@ -402,7 +402,7 @@
   {
     "id": 41,
     "name": "NAIL CUTTER",
-    "category": "grocery",
+    "category": "others",
     "brand": "CORPORATE",
     "sku": "6926292553045",
     "price": 160,
@@ -412,7 +412,7 @@
   {
     "id": 42,
     "name": "EYEBROW RAZOR",
-    "category": "grocery",
+    "category": "razors",
     "brand": "CORPORATE",
     "sku": "8801038123097",
     "price": 120,
@@ -422,7 +422,7 @@
   {
     "id": 43,
     "name": "TIGER POWDER",
-    "category": "grocery",
+    "category": "skin-care",
     "brand": "CORPORATE",
     "sku": "8962222014123",
     "price": 80,
@@ -432,7 +432,7 @@
   {
     "id": 44,
     "name": "HAIRWELL 02",
-    "category": "grocery",
+    "category": "hair-care",
     "brand": "CORPORATE",
     "sku": "8964000045220",
     "price": 80,
@@ -442,7 +442,7 @@
   {
     "id": 45,
     "name": "SHOE SHINER BLACK",
-    "category": "grocery",
+    "category": "others",
     "brand": "CORPORATE",
     "sku": "8966000062108",
     "price": 150,
@@ -452,7 +452,7 @@
   {
     "id": 46,
     "name": "SHOE SHINER NATURAL",
-    "category": "grocery",
+    "category": "others",
     "brand": "CORPORATE",
     "sku": "8966000062184",
     "price": 150,
@@ -462,7 +462,7 @@
   {
     "id": 47,
     "name": "TOILET CLEANER 600ML",
-    "category": "grocery",
+    "category": "cleaning",
     "brand": "CORPORATE",
     "sku": "9783951261898",
     "price": 130,
@@ -472,7 +472,7 @@
   {
     "id": 48,
     "name": "NIMKO/CHANNE",
-    "category": "grocery",
+    "category": "snacks",
     "brand": "DAAL",
     "sku": "0031",
     "price": 50,
@@ -1142,7 +1142,7 @@
   {
     "id": 115,
     "name": "STEEL SOOBI",
-    "category": "grocery",
+    "category": "home-care",
     "brand": "MUX & GOLD",
     "sku": "0753692069144",
     "price": 60,
@@ -1152,7 +1152,7 @@
   {
     "id": 116,
     "name": "OSAKA TAPE",
-    "category": "grocery",
+    "category": "stationery",
     "brand": "OSAKA TAP",
     "sku": "579",
     "price": 50,
@@ -1272,7 +1272,7 @@
   {
     "id": 128,
     "name": "LUDE POLISH",
-    "category": "grocery",
+    "category": "others",
     "brand": "SHOE POLISH",
     "sku": "6972461050006",
     "price": 100,
@@ -1282,7 +1282,7 @@
   {
     "id": 129,
     "name": "ELFI",
-    "category": "grocery",
+    "category": "others",
     "brand": "SHOE POLISH",
     "sku": "897121001173",
     "price": 30,
@@ -1292,7 +1292,7 @@
   {
     "id": 130,
     "name": "SKIN WHITE SOAP",
-    "category": "grocery",
+    "category": "skin-cleansing",
     "brand": "CORPORATE",
     "sku": "8964000578452",
     "price": 140,
@@ -1712,7 +1712,7 @@
   {
     "id": 172,
     "name": "DAAL MASH 500GM",
-    "category": "stationery",
+    "category": "grocery",
     "brand": "DAAL",
     "sku": "60",
     "price": 240,
@@ -1722,7 +1722,7 @@
   {
     "id": 173,
     "name": "DAAL MOONG 500GM",
-    "category": "stationery",
+    "category": "grocery",
     "brand": "DAAL",
     "sku": "61",
     "price": 200,
@@ -1852,7 +1852,7 @@
   {
     "id": 186,
     "name": "SHIELD FEEDER W LARGE",
-    "category": "skin-care",
+    "category": "baby-care",
     "brand": "FEEDER",
     "sku": "8964002137985",
     "price": 200,
@@ -1892,7 +1892,7 @@
   {
     "id": 190,
     "name": "DAAL MASOOR 500GM",
-    "category": "hair-care",
+    "category": "grocery",
     "brand": "DAAL",
     "sku": "63",
     "price": 120,
@@ -1902,7 +1902,7 @@
   {
     "id": 191,
     "name": "DAAL MOONG 1KG",
-    "category": "hair-care",
+    "category": "grocery",
     "brand": "DAAL",
     "sku": "64",
     "price": 400,
@@ -1932,7 +1932,7 @@
   {
     "id": 194,
     "name": "NOVA DISHWASH",
-    "category": "laundry",
+    "category": "home-care",
     "brand": "NOVA",
     "sku": "8960090000040",
     "price": 20,
@@ -1942,7 +1942,7 @@
   {
     "id": 195,
     "name": "NOVA D WASH GELL",
-    "category": "laundry",
+    "category": "home-care",
     "brand": "NOVA",
     "sku": "8960090000200",
     "price": 150,
@@ -1982,7 +1982,7 @@
   {
     "id": 199,
     "name": "SLANTY BLUE",
-    "category": "foods",
+    "category": "snacks",
     "brand": "KOLSON PRODUCTS",
     "sku": "671866116664",
     "price": 20,
@@ -2162,7 +2162,7 @@
   {
     "id": 217,
     "name": "NATIONAL BIRYANI",
-    "category": "foods",
+    "category": "spices",
     "brand": "BIRYANI",
     "sku": "620514000275",
     "price": 145,
@@ -2172,7 +2172,7 @@
   {
     "id": 218,
     "name": "NATIONAL CHAT MASALA",
-    "category": "foods",
+    "category": "spices",
     "brand": "CHAT MASALA",
     "sku": "620514001029",
     "price": 120,
@@ -2182,7 +2182,7 @@
   {
     "id": 219,
     "name": "NATIONAL KARAI",
-    "category": "foods",
+    "category": "spices",
     "brand": "KARAI",
     "sku": "620514000404",
     "price": 145,
@@ -2222,7 +2222,7 @@
   {
     "id": 223,
     "name": "NATIONAL CRUSHED 750GM",
-    "category": "foods",
+    "category": "spices",
     "brand": "NATIONAL ACHAR",
     "sku": "620514015705",
     "price": 700,
@@ -2242,7 +2242,7 @@
   {
     "id": 225,
     "name": "NATIONAL QORMA",
-    "category": "foods",
+    "category": "spices",
     "brand": "QORMA",
     "sku": "620514000565",
     "price": 145,
@@ -2532,7 +2532,7 @@
   {
     "id": 254,
     "name": "CERELAC 3F SACHET",
-    "category": "foods",
+    "category": "baby-care",
     "brand": "CERELAC",
     "sku": "8961008220345",
     "price": 50,
@@ -2542,7 +2542,7 @@
   {
     "id": 255,
     "name": "EVERYDAY ORIGINAL 350GM",
-    "category": "foods",
+    "category": "milk-dairy",
     "brand": "EVERYDAY",
     "sku": "8961008217604",
     "price": 750,
@@ -2552,7 +2552,7 @@
   {
     "id": 256,
     "name": "EVERYDAY SACHET",
-    "category": "foods",
+    "category": "milk-dairy",
     "brand": "EVERYDAY",
     "sku": "8961008221700",
     "price": 30,
@@ -2562,7 +2562,7 @@
   {
     "id": 257,
     "name": "EVERYDAY 230GM",
-    "category": "foods",
+    "category": "milk-dairy",
     "brand": "EVERYDAY",
     "sku": "8961008221717",
     "price": 500,
@@ -2702,7 +2702,7 @@
   {
     "id": 271,
     "name": "AIR FRESHNER",
-    "category": "skin-care",
+    "category": "home-care",
     "brand": "PERFUME",
     "sku": "732388510832",
     "price": 240,
@@ -2712,7 +2712,7 @@
   {
     "id": 272,
     "name": "WIZ PHENYLE",
-    "category": "others",
+    "category": "cleaning",
     "brand": "PHENYLE",
     "sku": "8964001250746",
     "price": 250,
@@ -2722,7 +2722,7 @@
   {
     "id": 273,
     "name": "POCHHA PHENYLE",
-    "category": "others",
+    "category": "cleaning",
     "brand": "PHENYLE",
     "sku": "9783651261891",
     "price": 200,
@@ -2732,7 +2732,7 @@
   {
     "id": 274,
     "name": "PHENYLE 1 L",
-    "category": "others",
+    "category": "cleaning",
     "brand": "PHENYLE",
     "sku": "9783651262287",
     "price": 100,
@@ -2902,7 +2902,7 @@
   {
     "id": 291,
     "name": "DETOLE BAR 115GM",
-    "category": "household-paper",
+    "category": "skin-cleansing",
     "brand": "DETOLE",
     "sku": "6001106209506",
     "price": 150,
@@ -2932,7 +2932,7 @@
   {
     "id": 294,
     "name": "ROBIN 75ML",
-    "category": "others",
+    "category": "cleaning",
     "brand": "ROBIN",
     "sku": "6001106309718",
     "price": 280,
@@ -2942,7 +2942,7 @@
   {
     "id": 295,
     "name": "BADAR SOAP",
-    "category": "stationery",
+    "category": "skin-cleansing",
     "brand": "DASTA",
     "sku": "54",
     "price": 70,
@@ -3102,7 +3102,7 @@
   {
     "id": 311,
     "name": "ROSE PATAL LUXERY",
-    "category": "skin-care",
+    "category": "household-paper",
     "brand": "ROSE PATTEL TISSUE",
     "sku": "8961006010016",
     "price": 310,
@@ -3112,7 +3112,7 @@
   {
     "id": 312,
     "name": "TULIP ROLL PINK",
-    "category": "skin-care",
+    "category": "household-paper",
     "brand": "ROSE PATTEL TISSUE",
     "sku": "8961006020046",
     "price": 60,
@@ -3122,7 +3122,7 @@
   {
     "id": 313,
     "name": "PARTY PACK PINK",
-    "category": "skin-care",
+    "category": "household-paper",
     "brand": "ROSE PATTEL TISSUE",
     "sku": "8961006040129",
     "price": 230,
@@ -3132,7 +3132,7 @@
   {
     "id": 314,
     "name": "PARTY PACK W TISSUE",
-    "category": "skin-care",
+    "category": "household-paper",
     "brand": "ROSE PATTEL TISSUE",
     "sku": "8961006040136",
     "price": 240,
@@ -3142,7 +3142,7 @@
   {
     "id": 315,
     "name": "MAXOB ROLL TISSUE",
-    "category": "skin-care",
+    "category": "household-paper",
     "brand": "ROSE PATTEL TISSUE",
     "sku": "8961006070805",
     "price": 120,
@@ -3642,7 +3642,7 @@
   {
     "id": 365,
     "name": "BABY OIL",
-    "category": "skin-care",
+    "category": "baby-care",
     "brand": "BABY OIL",
     "sku": "8964003520275",
     "price": 180,
@@ -3652,7 +3652,7 @@
   {
     "id": 366,
     "name": "BABY LOTION 60ML",
-    "category": "skin-care",
+    "category": "baby-care",
     "brand": "SHIELD LOTION",
     "sku": "8964003820282",
     "price": 180,
@@ -3662,7 +3662,7 @@
   {
     "id": 367,
     "name": "SKIN WHITE SOAP",
-    "category": "skin-care",
+    "category": "skin-cleansing",
     "brand": "SKIN CARE PRODUCTS",
     "sku": "8964000578001",
     "price": 140,
@@ -3672,7 +3672,7 @@
   {
     "id": 368,
     "name": "SULTAN PINK SALT",
-    "category": "cooking-oil",
+    "category": "grocery",
     "brand": "SULTAN GHEE",
     "sku": "8964000686751",
     "price": 90,
@@ -3822,7 +3822,7 @@
   {
     "id": 383,
     "name": "TIGER COIL",
-    "category": "cleaning",
+    "category": "others",
     "brand": "TIGER",
     "sku": "8962222014031",
     "price": 100,
@@ -3942,7 +3942,7 @@
   {
     "id": 395,
     "name": "KATCHUP 400GM",
-    "category": "foods",
+    "category": "spices",
     "brand": "KATCHUP",
     "sku": "8961014032130",
     "price": 250,

@@ -734,7 +734,13 @@ const CATEGORY_ICONS = {
     btn.disabled = isLoading;
   }
   function openWhatsAppConfirmation(orderData) {
-    const itemLines = cart.map((item) => `• ${item.name} x${item.quantity}`).join("\n");
+    const itemLines = cart.map((item) => {
+      const unitPrice = formatPrice(item.price);
+      if (item.quantity > 1) {
+        return `• ${item.name} x${item.quantity} — ${unitPrice} each = ${formatPrice(item.price * item.quantity)}`;
+      }
+      return `• ${item.name} x${item.quantity} — ${unitPrice}`;
+    }).join("\n");
     const total = getCartSubtotal() + DELIVERY_FEE;
     const message =
       `Assalam o Alaikum,\n\n` +

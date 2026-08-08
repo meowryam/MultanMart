@@ -69,6 +69,15 @@ CP_TOKEN_RE = re.compile(r"\bCP\s*\d*\b", re.IGNORECASE)
 # Junk whitespace between tokens.
 SPACE_RE = re.compile(r"\s{2,}")
 
+DC_COUNTER_SKU_RE = re.compile(r"^DC\d+$", re.IGNORECASE)
+DC_COUNTER_LABEL = "DC COUNTER"
+
+
+def clean_brand(raw):
+    """Return '' for the stock's DC COUNTER label, else the raw value."""
+    brand = str(raw or "").strip()
+    return "" if brand.upper() == DC_COUNTER_LABEL else brand
+
 
 def slugify(value):
     """Turn a product name into a kebab-case image filename (no extension)."""
@@ -128,6 +137,8 @@ def main():
 
         sku = row[COL["sku"] - 1]
         sku = str(sku) if sku is not None else ""
+        if DC_COUNTER_SKU_RE.match(sku):
+            continue
         brand = str(row[COL["brand"] - 1] or "").strip()
 
         category = CATEGORY_BY_NAME.get(str(category_raw).strip())
@@ -152,7 +163,7 @@ def main():
                 "id": len(products) + 1,
                 "name": name,
                 "category": category_slug,
-                "brand": brand,
+                "brand": clean_brand(brand),
                 "sku": sku,
                 "price": price,
                 "stock": stock,

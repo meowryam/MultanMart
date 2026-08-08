@@ -42,8 +42,11 @@ COL = {
     "tp": 5,      # "TP"
 }
 
+DC_COUNTER_SKU_RE = re.compile(r"^DC\d+$", re.IGNORECASE)
+DC_COUNTER_LABEL = "DC COUNTER"
+
 # Anything that looks like a price embedded in a description/name, e.g.
-# "Rs 160", "RS:50", "RS100", "Rs.240", "PKR 500". These are OLD prices and
+# "Rs 170", "RS:50", "RS100", "Rs.240", "PKR 500". These are OLD prices and
 # must never leak into product names — the real price lives in the TP column.
 PRICE_TOKEN_RE = re.compile(
     r"\b(?:Rs\.?|PKR\.?)\s*:?\s*\d+\b", re.IGNORECASE
@@ -90,6 +93,12 @@ def strip_prices(name):
     return name
 
 
+def clean_brand(raw):
+    """Return '' for the pivot's DC COUNTER group label, else the raw value."""
+    brand = str(raw or "").strip()
+    return "" if brand.upper() == DC_COUNTER_LABEL else brand
+
+
 def norm_price(raw):
     """Return TP as an int when whole, else a float rounded to 2 decimals."""
     value = float(raw)
@@ -121,6 +130,9 @@ def main():
         if desc == "Grand Total":
             skipped_rows.append(("grand total", row))
             continue
+        if DC_COUNTER_SKU_RE.match(sku):
+            skipped_rows.append(("dc counter", row))
+            continue
         if sku in seen_skus:
             duplicate_rows += 1
             skipped_rows.append(("duplicate SKU", row))
@@ -130,7 +142,7 @@ def main():
             {
                 "sku": sku,
                 "desc": desc,
-                "brand": str(row[COL["brand"]] or "").strip(),
+                "brand": clean_brand(row[COL["brand"]]),
                 "qty": row[COL["qty"]],
                 "tp": row[COL["tp"]],
             }
@@ -152,6 +164,8 @@ def main():
         old = by_sku.get(pv["sku"])
         if old is not None:
             product = dict(old)
+            if "brand" in product:
+                product["brand"] = clean_brand(product["brand"])
             if norm_price(pv["tp"]) != old["price"]:
                 price_changed += 1
             if int(pv["qty"]) != old["stock"]:
@@ -179,8 +193,11 @@ def main():
     pivot_skus = set(seen_skus)
     removed = len(existing_skus - pivot_skus)
 
-    for i, p in enumerate(products, start=1):
-        p["id"] = i
+    next_id = (max((p["id"] for p in products if "id" in p), default=0) + 1)
+    for p in products:
+        if "id" not in p:
+            p["id"] = next_id
+            next_id += 1
 
     # Match the existing file's CRLF formatting (no trailing newline).
     body = json.dumps(products, ensure_ascii=False, indent=2).replace("\n", "\r\n")

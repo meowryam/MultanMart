@@ -5,11 +5,22 @@
 - Preserve existing name/category/brand/sku/image for kept products.
 """
 import json
+import re
+
 import openpyxl
 
 ROOT = r"D:\MultanMart"
 EXCEL = ROOT + r"\stock_in_hand 1.xlsx"
 JSON = ROOT + r"\products.json"
+
+DC_COUNTER_SKU_RE = re.compile(r"^DC\d+$", re.IGNORECASE)
+DC_COUNTER_LABEL = "DC COUNTER"
+
+
+def clean_brand(raw):
+    brand = str(raw or "").strip()
+    return "" if brand.upper() == DC_COUNTER_LABEL else brand
+
 
 wb = openpyxl.load_workbook(EXCEL, data_only=True)
 ws = wb["PIVOT TABLE"]
@@ -18,6 +29,8 @@ pivot = {}
 for row in ws.iter_rows(min_row=4, values_only=True):
     sku = str(row[2]) if row[2] is not None else ""
     if not sku.strip():
+        continue
+    if DC_COUNTER_SKU_RE.match(sku):
         continue
     qty = row[4]
     tp = row[5]
@@ -36,6 +49,8 @@ for p in products:
     if pv is None:
         removed.append(p)
         continue
+    if "brand" in p:
+        p["brand"] = clean_brand(p["brand"])
     new_price = pv["tp"]
     new_stock = int(pv["qty"])
     # Normalize price to int when whole, else float

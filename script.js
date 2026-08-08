@@ -708,12 +708,12 @@ const CATEGORY_ICONS = {
 
   function buildGoogleFormBody(orderData) {
     const body = new URLSearchParams();
-    body.append(FORM_FIELDS.customerName, orderData.customerName);
-    body.append(FORM_FIELDS.phoneNumber, orderData.phoneNumber);
-    body.append(FORM_FIELDS.address, orderData.address);
-    body.append(FORM_FIELDS.productName, orderData.productName);
-    body.append(FORM_FIELDS.quantity, orderData.quantity);
-    body.append(FORM_FIELDS.notes, orderData.notes);
+    body.append(`entry.${FORM_FIELDS.customerName}`, orderData.customerName);
+    body.append(`entry.${FORM_FIELDS.phoneNumber}`, orderData.phoneNumber);
+    body.append(`entry.${FORM_FIELDS.address}`, orderData.address);
+    body.append(`entry.${FORM_FIELDS.productName}`, orderData.productName);
+    body.append(`entry.${FORM_FIELDS.quantity}`, orderData.quantity);
+    body.append(`entry.${FORM_FIELDS.notes}`, orderData.notes);
     return body;
   }
   async function submitOrderToGoogleForm(orderData) {
